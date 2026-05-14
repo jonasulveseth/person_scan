@@ -6,7 +6,13 @@ Rails.application.routes.draw do
   get  "login",  to: "sessions#new",  as: :login
 
   resources :sites, param: :id do
-    resources :visitors, only: :show
+    resources :visitors, only: :show do
+      post :reclassify, on: :member
+    end
+  end
+
+  resources :model_configs do
+    post :make_default, on: :member
   end
 
   root "sites#index"

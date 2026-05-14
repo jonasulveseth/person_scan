@@ -1,7 +1,12 @@
 <p><%= link_to "&larr; All sites".html_safe, sites_path %></p>
 
 <h1><%= @site.name %></h1>
-<p>URL: <%= @site.url.presence || "(not set)" %></p>
+<p>
+  URL: <%= @site.url.presence || "(not set)" %> &middot;
+  Model: <strong><%= @site.effective_model_config&.name || "(none configured)" %></strong>
+  <%= "(site default)" if @site.model_config %>
+  &middot; <%= link_to "Edit", edit_site_path(@site) %>
+</p>
 
 <h2>Install snippet</h2>
 <p>Add this to the bottom of your site's <code>&lt;body&gt;</code>:</p>

@@ -1,6 +1,7 @@
 <h1>Your sites</h1>
 
 <p><%= link_to "New site", new_site_path %> &middot;
+   <%= link_to "Model configs", model_configs_path %> &middot;
    <%= button_to "Log out", session_path, method: :delete, form: { style: "display:inline" } %></p>
 
 <% if @sites.empty? %>

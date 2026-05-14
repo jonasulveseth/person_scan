@@ -45,6 +45,6 @@ class SitesController < ApplicationController
   end
 
   def site_params
-    params.expect(site: %i[name url active])
+    params.expect(site: %i[name url active model_config_id])
   end
 end

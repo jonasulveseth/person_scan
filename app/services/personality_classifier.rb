@@ -1,14 +1,15 @@
 class PersonalityClassifier
   MIN_EVENTS = 1 # MVP: try as soon as we have anything; tune later.
 
-  def self.call(visitor) = new(visitor).call
+  def self.call(visitor, model_config: nil) = new(visitor, model_config: model_config).call
 
-  def initialize(visitor)
+  def initialize(visitor, model_config: nil)
     @visitor = visitor
+    @explicit_config = model_config
   end
 
   def call
-    config = ModelConfig.default
+    config = @explicit_config || @visitor.site.effective_model_config
     raise Llm::ConfigError, "No active ModelConfig" if config.nil?
     return nil unless enough_data?
 

@@ -1,0 +1,48 @@
+<p><%= link_to "&larr; Sites".html_safe, sites_path %></p>
+
+<h1>Model configurations</h1>
+
+<p>These are the LLM models the classifier can use. Each <strong>site</strong> can pick its own model on the site page; otherwise the <strong>default</strong> below is used.</p>
+
+<h2>Provider connectivity</h2>
+<ul>
+  <% @provider_status.each do |provider, has_key| %>
+    <li><strong><%= provider %></strong>: <%= has_key ? "✓ API key configured" : "no API key (set via bin/rails credentials:edit)" %></li>
+  <% end %>
+</ul>
+
+<p><%= link_to "Add model", new_model_config_path %></p>
+
+<table border="1" cellpadding="6" cellspacing="0">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Provider</th>
+      <th>Model ID</th>
+      <th>Active</th>
+      <th>Default</th>
+      <th>Predictions</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @model_configs.each do |m| %>
+      <tr>
+        <td><%= link_to m.name, m %></td>
+        <td><%= m.provider %><%= " ⚠" unless @provider_status[m.provider] %></td>
+        <td><code><%= m.model_id %></code></td>
+        <td><%= m.active? ? "yes" : "no" %></td>
+        <td>
+          <% if m.is_default? %>★<% else %>
+            <%= button_to "Make default", make_default_model_config_path(m), method: :post, form: { style: "display:inline" } %>
+          <% end %>
+        </td>
+        <td><%= m.predictions.count %></td>
+        <td>
+          <%= link_to "Edit", edit_model_config_path(m) %> &middot;
+          <%= button_to "Delete", model_config_path(m), method: :delete, data: { turbo_confirm: "Sure?" }, form: { style: "display:inline" } %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

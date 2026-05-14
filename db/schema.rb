@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_05_14_133416) do
+ActiveRecord::Schema[8.0].define(version: 2026_05_14_143418) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -93,6 +93,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_14_133416) do
     t.boolean "active", default: true, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "model_config_id"
+    t.index ["model_config_id"], name: "index_sites_on_model_config_id"
     t.index ["public_key"], name: "index_sites_on_public_key", unique: true
     t.index ["user_id"], name: "index_sites_on_user_id"
   end
@@ -166,6 +168,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_14_133416) do
   add_foreign_key "predictions", "model_configs"
   add_foreign_key "predictions", "visitors"
   add_foreign_key "sessions", "users"
+  add_foreign_key "sites", "model_configs"
   add_foreign_key "sites", "users"
   add_foreign_key "tracking_events", "sites"
   add_foreign_key "tracking_events", "visitors"

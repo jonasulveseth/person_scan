@@ -3,6 +3,13 @@
 <h1>Visitor <code><%= @visitor.fingerprint[0, 12] %></code></h1>
 <p>First seen: <%= @visitor.first_seen_at %> &middot; Last seen: <%= @visitor.last_seen_at %></p>
 
+<h2>Reclassify</h2>
+<%= form_with url: reclassify_site_visitor_path(@visitor.site, @visitor), method: :post, local: true do |f| %>
+  <%= f.label :model_config_id, "Model:" %>
+  <%= f.select :model_config_id, @models.map { |m| [m.name, m.id] }, { include_blank: "(use site/system default)" } %>
+  <%= f.submit "Run classification" %>
+<% end %>
+
 <h2>Latest prediction</h2>
 <% if @prediction %>
   <p><strong style="font-size:1.4em"><%= @prediction.label %></strong>

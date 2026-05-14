@@ -1,0 +1,15 @@
+<p><%= link_to "&larr; Models".html_safe, model_configs_path %></p>
+
+<h1><%= @model_config.name %><%= " ★" if @model_config.is_default? %></h1>
+
+<p>
+  Provider: <strong><%= @model_config.provider %></strong> &middot;
+  Model ID: <code><%= @model_config.model_id %></code> &middot;
+  Active: <%= @model_config.active? ? "yes" : "no" %> &middot;
+  Predictions made: <%= @prediction_count %>
+</p>
+
+<h2>Prompt template</h2>
+<pre style="background:#eee;padding:10px;overflow:auto;white-space:pre-wrap"><%= @model_config.prompt_template %></pre>
+
+<p><%= link_to "Edit", edit_model_config_path(@model_config) %></p>

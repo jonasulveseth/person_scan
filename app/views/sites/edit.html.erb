@@ -1,4 +1,6 @@
-<h1>New site</h1>
+<p><%= link_to "&larr; Site".html_safe, site_path(@site) %></p>
+
+<h1>Edit <%= @site.name %></h1>
 
 <%= form_with model: @site do |f| %>
   <% if @site.errors.any? %>
@@ -7,12 +9,11 @@
     </ul>
   <% end %>
   <p><%= f.label :name %><br><%= f.text_field :name, required: true %></p>
-  <p><%= f.label :url %> (optional)<br><%= f.url_field :url %></p>
+  <p><%= f.label :url %><br><%= f.url_field :url %></p>
   <p>
-    <%= f.label :model_config_id, "Model (override system default)" %><br>
+    <%= f.label :model_config_id, "Model" %><br>
     <%= f.collection_select :model_config_id, ModelConfig.active.order(:name), :id, :name, include_blank: "Use system default" %>
   </p>
-  <p><%= f.submit "Create" %></p>
+  <p><%= f.check_box :active %> <%= f.label :active %></p>
+  <p><%= f.submit "Save" %></p>
 <% end %>
-
-<p><%= link_to "Cancel", sites_path %></p>
