@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html class="h-full">
+  <head>
+    <title><%= content_for(:title) || "Person Scan" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+    <style>body { font-family: 'Source Sans 3', system-ui, sans-serif; }</style>
+  </head>
+
+  <body class="h-full text-stone-900 antialiased">
+    <div class="min-h-screen flex flex-col lg:flex-row">
+
+      <%# --- Brand panel (left on desktop, top on mobile) --- %>
+      <aside class="lg:w-2/5 bg-gradient-to-br from-amber-900 via-amber-800 to-stone-900 text-amber-50 px-8 lg:px-12 py-10 lg:py-16 flex flex-col">
+        <div>
+          <%= link_to splash_path, class: "inline-flex items-center gap-2 text-amber-100/90 hover:text-white text-sm" do %>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg>
+            Back to home
+          <% end %>
+        </div>
+
+        <div class="flex-1 flex flex-col justify-center mt-10 lg:mt-0 max-w-md">
+          <div class="flex items-center gap-2 mb-8">
+            <span class="inline-block w-2 h-2 rounded-full bg-amber-300"></span>
+            <span class="text-lg font-semibold tracking-tight">Person Scan</span>
+          </div>
+          <h1 class="text-3xl lg:text-4xl font-light leading-tight">
+            Know what your <strong class="font-semibold">visitors</strong> are <strong class="font-semibold">like</strong>.
+          </h1>
+          <p class="mt-4 text-amber-100/80 font-light text-base lg:text-lg">
+            Behavior-driven personality insights for every visitor on your site.
+            One script tag, one API.
+          </p>
+        </div>
+
+        <div class="hidden lg:block text-xs text-amber-100/50">
+          © <%= Date.current.year %> Person Scan
+        </div>
+      </aside>
+
+      <%# --- Form panel --- %>
+      <main class="lg:w-3/5 bg-stone-50 flex items-center justify-center px-5 py-12 lg:py-16">
+        <div class="w-full max-w-md">
+          <% if flash[:notice] %>
+            <div class="mb-4 rounded-md border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900"><%= flash[:notice] %></div>
+          <% end %>
+          <% if flash[:alert] %>
+            <div class="mb-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"><%= flash[:alert] %></div>
+          <% end %>
+
+          <%= yield %>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

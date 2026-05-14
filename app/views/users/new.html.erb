@@ -1,32 +1,31 @@
-<div class="max-w-md mx-auto">
-  <h1 class="text-2xl font-semibold mb-6">Create account</h1>
+<h2 class="text-2xl font-semibold mb-1">Create your account</h2>
+<p class="text-sm text-stone-600 mb-6">Start scanning visitor behavior in minutes.</p>
 
-  <div class="card">
-    <%= form_with model: @user, class: "space-y-4" do |f| %>
-      <% if @user.errors.any? %>
-        <div class="rounded-md border border-red-200 bg-red-50 p-3">
-          <ul class="text-sm text-red-800 list-disc list-inside">
-            <% @user.errors.full_messages.each do |msg| %><li><%= msg %></li><% end %>
-          </ul>
-        </div>
-      <% end %>
-      <div>
-        <%= f.label :email_address, class: "label" %>
-        <%= f.email_field :email_address, required: true, autofocus: true, class: "input" %>
-      </div>
-      <div>
-        <%= f.label :password, class: "label" %>
-        <%= f.password_field :password, required: true, minlength: 8, class: "input" %>
-      </div>
-      <div>
-        <%= f.label :password_confirmation, class: "label" %>
-        <%= f.password_field :password_confirmation, required: true, class: "input" %>
-      </div>
-      <%= f.submit "Sign up", class: "btn btn-primary w-full" %>
-    <% end %>
+<%= form_with model: @user, class: "space-y-4" do |f| %>
+  <% if @user.errors.any? %>
+    <div class="rounded-md border border-red-200 bg-red-50 p-3">
+      <ul class="text-sm text-red-800 list-disc list-inside">
+        <% @user.errors.full_messages.each do |msg| %><li><%= msg %></li><% end %>
+      </ul>
+    </div>
+  <% end %>
+  <div>
+    <%= f.label :email_address, class: "label" %>
+    <%= f.email_field :email_address, required: true, autofocus: true, class: "input" %>
   </div>
+  <div>
+    <%= f.label :password, class: "label" %>
+    <%= f.password_field :password, required: true, minlength: 8, class: "input" %>
+    <p class="text-xs text-stone-500 mt-1">At least 8 characters.</p>
+  </div>
+  <div>
+    <%= f.label :password_confirmation, class: "label" %>
+    <%= f.password_field :password_confirmation, required: true, class: "input" %>
+  </div>
+  <%= f.submit "Sign up", class: "btn btn-primary w-full" %>
+<% end %>
 
-  <p class="mt-4 text-sm text-zinc-600 text-center">
-    Already have an account? <%= link_to "Log in", login_path, class: "text-zinc-900 underline" %>
-  </p>
-</div>
+<p class="mt-6 text-sm text-stone-600">
+  Already have an account?
+  <%= link_to "Log in", login_path, class: "text-amber-800 hover:underline" %>
+</p>

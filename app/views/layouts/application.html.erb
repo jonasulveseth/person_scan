@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="h-full bg-zinc-50">
+<html class="h-full bg-stone-50">
   <head>
     <title><%= content_for(:title) || "Person Scan" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -10,17 +10,24 @@
     <%= yield :head %>
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
+    <style>body { font-family: 'Source Sans 3', system-ui, sans-serif; }</style>
   </head>
 
-  <body class="h-full text-zinc-900 antialiased">
+  <body class="h-full text-stone-900 antialiased">
     <% if authenticated? %>
-      <header class="border-b border-zinc-200 bg-white">
+      <header class="border-b border-stone-200 bg-white">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div class="flex h-14 items-center justify-between">
             <div class="flex items-center gap-6">
-              <%= link_to "Person Scan", root_path, class: "text-base font-semibold text-zinc-900" %>
+              <%= link_to root_path, class: "flex items-center gap-2" do %>
+                <span class="inline-block w-2 h-2 rounded-full bg-amber-800"></span>
+                <span class="text-base font-semibold text-stone-900">Person Scan</span>
+              <% end %>
               <nav class="hidden md:flex items-center gap-5">
                 <%= link_to "Sites", sites_path, class: "nav-link" %>
                 <%= link_to "Models", model_configs_path, class: "nav-link" %>
@@ -29,7 +36,7 @@
               </nav>
             </div>
             <div class="flex items-center gap-3">
-              <span class="text-xs text-zinc-500"><%= Current.user&.email_address %></span>
+              <span class="text-xs text-stone-500"><%= Current.user&.email_address %></span>
               <%= button_to "Log out", session_path, method: :delete, class: "btn btn-sm" %>
             </div>
           </div>
@@ -39,7 +46,7 @@
 
     <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
       <% if flash[:notice] %>
-        <div class="mb-4 rounded-md border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800"><%= flash[:notice] %></div>
+        <div class="mb-4 rounded-md border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900"><%= flash[:notice] %></div>
       <% end %>
       <% if flash[:alert] %>
         <div class="mb-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"><%= flash[:alert] %></div>

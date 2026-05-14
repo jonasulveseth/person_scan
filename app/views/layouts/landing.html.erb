@@ -17,8 +17,18 @@
         background-size: cover;
         background-position: center;
       }
+      .hero-bubbles {
+        background-image: url('<%= asset_path("landing/hero-bubbles.jpg") %>');
+        background-size: cover;
+        background-position: center;
+        opacity: 0;
+        animation: bubblesFade 1.8s ease-in 0.3s forwards;
+      }
+      @keyframes bubblesFade { to { opacity: 1; } }
       @media (max-width: 640px) {
-        .hero-bg { background-image: url('<%= asset_path("landing/hero-mobile.jpg") %>'); }
+        .hero-bg, .hero-bubbles {
+          background-image: url('<%= asset_path("landing/hero-mobile.jpg") %>');
+        }
       }
       @keyframes floaty { 0%,100% { transform: translateY(0); } 50% { transform: translateY(12px); } }
       .floaty { animation: floaty 2.6s ease-in-out infinite; }
