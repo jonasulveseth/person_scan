@@ -1,0 +1,57 @@
+<p><%= link_to "&larr; #{@site.name}".html_safe, site_path(@site) %></p>
+
+<h1>Trends for <%= @site.name %></h1>
+<p><em>Generated <%= @trends[:generated_at] %> &middot; last <%= SiteTrends::DAYS_BACK %> days where applicable.</em></p>
+
+<h2>Overview</h2>
+<ul>
+  <li>Total visitors: <strong><%= @trends[:visitors][:total] %></strong></li>
+  <li>Visitors with at least one prediction: <%= @trends[:visitors][:with_prediction] %></li>
+  <li>New visitors in last <%= SiteTrends::DAYS_BACK %> days: <%= @trends[:visitors][:new_last_30d] %></li>
+  <li>Total predictions: <%= @trends[:predictions][:total] %>
+      &middot; avg confidence: <%= @trends[:predictions][:avg_confidence] ? "#{(@trends[:predictions][:avg_confidence] * 100).round(1)}%" : "—" %></li>
+  <li>Tracking events: <%= @trends[:events][:tracking] %> &middot;
+      Click events: <%= @trends[:events][:clicks] %> &middot;
+      Page visits: <%= @trends[:events][:page_visits] %></li>
+</ul>
+
+<h2>Distributions</h2>
+<h3>Gender</h3>
+<table border="1" cellpadding="4" cellspacing="0"><tr><th>Value</th><th>Count</th></tr>
+<% @trends[:distributions][:gender].sort_by { |_, n| -n }.each do |k, n| %>
+  <tr><td><%= k %></td><td><%= n %></td></tr>
+<% end %>
+</table>
+
+<h3>Age bracket</h3>
+<table border="1" cellpadding="4" cellspacing="0"><tr><th>Bracket</th><th>Count</th></tr>
+<% @trends[:distributions][:age_bracket].sort_by { |k, _| k.to_s }.each do |k, n| %>
+  <tr><td><%= k %></td><td><%= n %></td></tr>
+<% end %>
+</table>
+
+<h3>Top personality labels</h3>
+<table border="1" cellpadding="4" cellspacing="0"><tr><th>Label</th><th>Count</th></tr>
+<% @trends[:distributions][:label].each do |k, n| %>
+  <tr><td><%= k %></td><td><%= n %></td></tr>
+<% end %>
+</table>
+
+<h2>Average dimensions (across all predictions)</h2>
+<ul>
+  <% @trends[:avg_dimensions].each do |dim, val| %>
+    <li><strong><%= dim %></strong>: <%= val || "—" %></li>
+  <% end %>
+</ul>
+
+<h2>Predictions per day (last <%= SiteTrends::DAYS_BACK %> days)</h2>
+<% if @trends[:time_series].empty? %>
+  <p>No data.</p>
+<% else %>
+<table border="1" cellpadding="4" cellspacing="0"><tr><th>Date</th><th>Count</th><th>Bar</th></tr>
+<% max = @trends[:time_series].values.max.to_f %>
+<% @trends[:time_series].each do |date, n| %>
+  <tr><td><%= date %></td><td><%= n %></td><td><%= "█" * (max.zero? ? 0 : (n / max * 40).round) %></td></tr>
+<% end %>
+</table>
+<% end %>

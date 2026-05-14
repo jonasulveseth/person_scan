@@ -10,9 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_05_14_150522) do
+ActiveRecord::Schema[8.0].define(version: 2026_05_14_152936) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "api_keys", force: :cascade do |t|
+    t.bigint "site_id", null: false
+    t.string "name", null: false
+    t.string "token", null: false
+    t.datetime "last_used_at"
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["site_id"], name: "index_api_keys_on_site_id"
+    t.index ["token"], name: "index_api_keys_on_token", unique: true
+  end
 
   create_table "click_events", force: :cascade do |t|
     t.bigint "visitor_id", null: false
@@ -189,6 +201,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_14_150522) do
     t.index ["site_id"], name: "index_visitors_on_site_id"
   end
 
+  add_foreign_key "api_keys", "sites"
   add_foreign_key "click_events", "sites"
   add_foreign_key "click_events", "visitors"
   add_foreign_key "evaluation_runs", "model_configs"

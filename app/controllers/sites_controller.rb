@@ -1,5 +1,5 @@
 class SitesController < ApplicationController
-  before_action :set_site, only: %i[show edit update destroy]
+  before_action :set_site, only: %i[show edit update destroy trends]
 
   def index
     @sites = Current.user.sites.order(created_at: :desc)
@@ -21,6 +21,10 @@ class SitesController < ApplicationController
   def show
     @visitors = @site.visitors.includes(:predictions).order(last_seen_at: :desc).limit(50)
     @snippet = view_context.content_tag(:script, "", src: "#{request.base_url}/t.js?site=#{@site.public_key}")
+  end
+
+  def trends
+    @trends = SiteTrends.call(@site)
   end
 
   def edit; end

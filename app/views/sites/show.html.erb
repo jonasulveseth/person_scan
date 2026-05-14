@@ -8,6 +8,11 @@
   &middot; <%= link_to "Edit", edit_site_path(@site) %>
 </p>
 
+<p>
+  <%= link_to "Trends", trends_site_path(@site) %> &middot;
+  <%= link_to "API keys", site_api_keys_path(@site) %>
+</p>
+
 <h2>Install snippet</h2>
 <p>Add this to the bottom of your site's <code>&lt;body&gt;</code>:</p>
 <pre style="background:#eee;padding:10px;overflow:auto"><%= @snippet %></pre>

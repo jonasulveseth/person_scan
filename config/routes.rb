@@ -10,6 +10,10 @@ Rails.application.routes.draw do
       post :reclassify, on: :member
       post :save_as_training_example, to: "training_examples#save_from_visitor", on: :member
     end
+    resources :api_keys, only: %i[index create destroy] do
+      post :revoke, on: :member
+    end
+    get :trends, on: :member
   end
 
   resources :model_configs do
@@ -24,6 +28,14 @@ Rails.application.routes.draw do
   end
 
   resources :evaluation_runs, only: %i[index show create]
+
+  namespace :api do
+    namespace :v1 do
+      get  "site",                       to: "site#show"
+      get  "visitors",                   to: "visitors#index"
+      get  "visitors/:fingerprint",      to: "visitors#show", constraints: { fingerprint: /[^\/]+/ }
+    end
+  end
 
   root "sites#index"
 

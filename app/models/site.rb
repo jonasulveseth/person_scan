@@ -3,6 +3,7 @@ class Site < ApplicationRecord
   belongs_to :model_config, optional: true
 
   has_many :visitors, dependent: :destroy
+  has_many :api_keys, dependent: :destroy
 
   def effective_model_config
     model_config || ModelConfig.default
