@@ -1,0 +1,21 @@
+<p><%= link_to "&larr; Training examples".html_safe, training_examples_path %></p>
+
+<h1>Training example #<%= @example.id %></h1>
+<p>
+  Source: <%= @example.source %> &middot;
+  Visitor: <%= @example.visitor_id ? link_to("visitor #{@example.visitor_id}", site_visitor_path(@example.visitor.site, @example.visitor)) : "(no visitor link)" %> &middot;
+  Legacy cookie: <%= @example.legacy_cookie_id %>
+</p>
+
+<h2>Ground truth</h2>
+<ul>
+  <% @example.ground_truth.each do |k, v| %><li><strong><%= k %></strong>: <%= v %></li><% end %>
+</ul>
+
+<h2>Features</h2>
+<pre style="background:#eee;padding:10px;overflow:auto"><%= JSON.pretty_generate(@example.features) %></pre>
+
+<h2>Notes</h2>
+<p><%= simple_format(@example.notes.to_s) %></p>
+
+<p><%= link_to "Edit", edit_training_example_path(@example) %></p>

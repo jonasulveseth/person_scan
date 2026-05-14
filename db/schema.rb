@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_05_14_143418) do
+ActiveRecord::Schema[8.0].define(version: 2026_05_14_150522) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -35,6 +35,20 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_14_143418) do
     t.datetime "updated_at", null: false
     t.index ["site_id"], name: "index_click_events_on_site_id"
     t.index ["visitor_id"], name: "index_click_events_on_visitor_id"
+  end
+
+  create_table "evaluation_runs", force: :cascade do |t|
+    t.bigint "model_config_id", null: false
+    t.datetime "started_at"
+    t.datetime "finished_at"
+    t.integer "total"
+    t.integer "correct_gender"
+    t.integer "correct_age_bracket"
+    t.float "avg_confidence"
+    t.jsonb "results"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["model_config_id"], name: "index_evaluation_runs_on_model_config_id"
   end
 
   create_table "model_configs", force: :cascade do |t|
@@ -119,6 +133,20 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_14_143418) do
     t.index ["visitor_id"], name: "index_tracking_events_on_visitor_id"
   end
 
+  create_table "training_examples", force: :cascade do |t|
+    t.jsonb "features", default: {}, null: false
+    t.jsonb "ground_truth", default: {}, null: false
+    t.string "source", null: false
+    t.text "notes"
+    t.bigint "visitor_id"
+    t.string "legacy_cookie_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["legacy_cookie_id"], name: "index_training_examples_on_legacy_cookie_id"
+    t.index ["source"], name: "index_training_examples_on_source"
+    t.index ["visitor_id"], name: "index_training_examples_on_visitor_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email_address", null: false
     t.string "password_digest", null: false
@@ -163,6 +191,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_14_143418) do
 
   add_foreign_key "click_events", "sites"
   add_foreign_key "click_events", "visitors"
+  add_foreign_key "evaluation_runs", "model_configs"
   add_foreign_key "page_visits", "sites"
   add_foreign_key "page_visits", "visitors"
   add_foreign_key "predictions", "model_configs"
@@ -172,6 +201,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_14_143418) do
   add_foreign_key "sites", "users"
   add_foreign_key "tracking_events", "sites"
   add_foreign_key "tracking_events", "visitors"
+  add_foreign_key "training_examples", "visitors"
   add_foreign_key "visitor_features", "visitors"
   add_foreign_key "visitors", "sites"
 end

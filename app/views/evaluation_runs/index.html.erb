@@ -1,0 +1,43 @@
+<p><%= link_to "&larr; Sites".html_safe, sites_path %></p>
+
+<h1>Evaluation runs</h1>
+
+<h2>Start a new eval</h2>
+<%= form_with url: evaluation_runs_path, method: :post, local: true do %>
+  Model:
+  <%= select_tag "model_config_id", options_from_collection_for_select(@models, :id, :name) %>
+  Sample size:
+  <%= number_field_tag "limit", 20, min: 1, max: 500, size: 5 %>
+  <%= submit_tag "Run evaluation" %>
+<% end %>
+<p><em>Runs synchronously and calls the LLM N times — pick a small N (10–30) to start.</em></p>
+
+<h2>Past runs</h2>
+<% if @runs.empty? %>
+  <p>None yet.</p>
+<% else %>
+<table border="1" cellpadding="6" cellspacing="0">
+  <thead>
+    <tr>
+      <th>When</th>
+      <th>Model</th>
+      <th>N</th>
+      <th>Gender acc</th>
+      <th>Age acc</th>
+      <th>Avg conf</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @runs.each do |r| %>
+      <tr>
+        <td><%= link_to r.started_at&.strftime("%Y-%m-%d %H:%M"), r %></td>
+        <td><%= r.model_config.name %></td>
+        <td><%= r.total %></td>
+        <td><%= r.accuracy_gender ? "#{(r.accuracy_gender * 100).round(1)}%" : "—" %> (<%= r.correct_gender %>/<%= r.total %>)</td>
+        <td><%= r.accuracy_age_bracket ? "#{(r.accuracy_age_bracket * 100).round(1)}%" : "—" %></td>
+        <td><%= (r.avg_confidence.to_f * 100).round(1) %>%</td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<% end %>

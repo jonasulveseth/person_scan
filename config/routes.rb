@@ -8,12 +8,22 @@ Rails.application.routes.draw do
   resources :sites, param: :id do
     resources :visitors, only: :show do
       post :reclassify, on: :member
+      post :save_as_training_example, to: "training_examples#save_from_visitor", on: :member
     end
   end
 
   resources :model_configs do
     post :make_default, on: :member
   end
+
+  resources :training_examples do
+    collection do
+      post :import_legacy
+      post :import_csv
+    end
+  end
+
+  resources :evaluation_runs, only: %i[index show create]
 
   root "sites#index"
 

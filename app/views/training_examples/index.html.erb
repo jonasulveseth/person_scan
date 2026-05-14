@@ -1,0 +1,54 @@
+<p><%= link_to "&larr; Sites".html_safe, sites_path %></p>
+
+<h1>Training examples (<%= @examples.size %>)</h1>
+
+<p>
+  <%= link_to "Add manually", new_training_example_path %> &middot;
+  <%= button_to "Import from legacy SQLite (~9 rows)", import_legacy_training_examples_path, method: :post, form: { style: "display:inline" } %> &middot;
+  <%= button_to "Import from legacy CSV (~1288 rows, gender.csv)", import_csv_training_examples_path, method: :post, form: { style: "display:inline" } %>
+</p>
+
+<h2>Distribution</h2>
+<p>
+  <strong>By source:</strong>
+  <% @by_source.each do |s, n| %><%= s %>: <%= n %> &middot; <% end %>
+</p>
+<p>
+  <strong>By gender:</strong>
+  <% @by_gender.each do |g, n| %><%= g || "(none)" %>: <%= n %> &middot; <% end %>
+</p>
+<p>
+  <strong>By age bracket:</strong>
+  <% @by_age.each do |a, n| %><%= a || "(none)" %>: <%= n %> &middot; <% end %>
+</p>
+
+<h2>Examples</h2>
+<table border="1" cellpadding="6" cellspacing="0">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Source</th>
+      <th>Gender</th>
+      <th>Age</th>
+      <th>Feature size</th>
+      <th>Notes</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @examples.each do |te| %>
+      <tr>
+        <td><%= link_to te.id, te %></td>
+        <td><%= te.source %></td>
+        <td><%= te.truth_gender %></td>
+        <td><%= te.truth_age_bracket %></td>
+        <td><%= te.features.is_a?(Hash) ? te.features.keys.size : 0 %> keys</td>
+        <td><%= te.notes&.truncate(60) %></td>
+        <td>
+          <%= link_to "Edit", edit_training_example_path(te) %> &middot;
+          <%= button_to "Delete", training_example_path(te), method: :delete, data: { turbo_confirm: "Sure?" }, form: { style: "display:inline" } %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

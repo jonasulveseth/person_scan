@@ -1,0 +1,54 @@
+<p><%= link_to "&larr; Evaluation runs".html_safe, evaluation_runs_path %></p>
+
+<h1>Evaluation run #<%= @run.id %></h1>
+
+<p>
+  <strong>Model:</strong> <%= @run.model_config.name %> (<%= @run.model_config.provider %>/<%= @run.model_config.model_id %>) &middot;
+  Started: <%= @run.started_at %> &middot; Finished: <%= @run.finished_at %>
+</p>
+
+<h2>Aggregate</h2>
+<ul>
+  <li>Examples evaluated: <strong><%= @run.total %></strong></li>
+  <li>Gender accuracy: <strong><%= @run.accuracy_gender ? "#{(@run.accuracy_gender * 100).round(1)}%" : "—" %></strong> (<%= @run.correct_gender %>/<%= @run.total %>)</li>
+  <% age_eval = @run.results.is_a?(Hash) ? @run.results["age_evaluated"].to_i : 0 %>
+  <li>Age-bracket accuracy: <strong><%= age_eval.positive? ? "#{(@run.correct_age_bracket.to_f / age_eval * 100).round(1)}%" : "—" %></strong> (<%= @run.correct_age_bracket %>/<%= age_eval %> with age label)</li>
+  <li>Average confidence: <%= (@run.avg_confidence.to_f * 100).round(1) %>%</li>
+</ul>
+
+<h2>Per-example breakdown</h2>
+<% items = @run.results.is_a?(Hash) ? @run.results["examples"] || [] : [] %>
+<table border="1" cellpadding="4" cellspacing="0" style="font-size:0.9em">
+  <thead>
+    <tr>
+      <th>Example</th>
+      <th>Truth gender</th>
+      <th>Pred gender</th>
+      <th>✓</th>
+      <th>Truth age</th>
+      <th>Pred age</th>
+      <th>✓</th>
+      <th>Label</th>
+      <th>Conf</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% items.each do |r| %>
+      <tr>
+        <td><%= link_to r["training_example_id"], training_example_path(r["training_example_id"]) rescue r["training_example_id"] %></td>
+        <% if r["error"] %>
+          <td colspan="8" style="color:red"><%= r["error"] %></td>
+        <% else %>
+          <td><%= r.dig("truth", "gender") %></td>
+          <td><%= r.dig("predicted", "gender") %></td>
+          <td><%= r["gender_ok"] ? "✓" : "✗" %></td>
+          <td><%= r.dig("truth", "age_bracket") %></td>
+          <td><%= r.dig("predicted", "age_bracket") %></td>
+          <td><%= r["age_ok"] ? "✓" : "✗" %></td>
+          <td><%= r.dig("predicted", "label") %></td>
+          <td><%= (r.dig("predicted", "confidence").to_f * 100).round %>%</td>
+        <% end %>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

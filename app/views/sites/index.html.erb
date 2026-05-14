@@ -2,6 +2,8 @@
 
 <p><%= link_to "New site", new_site_path %> &middot;
    <%= link_to "Model configs", model_configs_path %> &middot;
+   <%= link_to "Training data", training_examples_path %> &middot;
+   <%= link_to "Evaluations", evaluation_runs_path %> &middot;
    <%= button_to "Log out", session_path, method: :delete, form: { style: "display:inline" } %></p>
 
 <% if @sites.empty? %>

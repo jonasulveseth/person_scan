@@ -1,0 +1,26 @@
+<%= form_with model: @example do |f| %>
+  <% if @example.errors.any? %>
+    <ul style="color:red">
+      <% @example.errors.full_messages.each do |msg| %><li><%= msg %></li><% end %>
+    </ul>
+  <% end %>
+  <p>
+    <%= f.label :source %><br>
+    <%= f.select :source, TrainingExample::SOURCES.map { |s| [s, s] } %>
+  </p>
+  <p>
+    Ground truth — gender:
+    <%= f.select :gender, [["", ""], ["male", "male"], ["female", "female"], ["unknown", "unknown"]], selected: @example.truth_gender %>
+    age bracket:
+    <%= f.select :age_bracket, [["", ""]] + %w[<10 10-20 20-30 30-40 40-50 50-60 60-70 70+ unknown].map { |b| [b, b] }, selected: @example.truth_age_bracket %>
+  </p>
+  <p>
+    <%= f.label :notes %><br>
+    <%= f.text_area :notes, rows: 3, cols: 80 %>
+  </p>
+  <p>
+    Features (JSON; leave as-is if imported):<br>
+    <%= f.text_area :features_json, rows: 10, cols: 80, value: JSON.pretty_generate(@example.features || {}) %>
+  </p>
+  <p><%= f.submit %></p>
+<% end %>

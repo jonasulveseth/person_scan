@@ -3,6 +3,16 @@
 <h1>Visitor <code><%= @visitor.fingerprint[0, 12] %></code></h1>
 <p>First seen: <%= @visitor.first_seen_at %> &middot; Last seen: <%= @visitor.last_seen_at %></p>
 
+<h2>Save as training example</h2>
+<%= form_with url: save_as_training_example_site_visitor_path(@visitor.site, @visitor), method: :post, local: true do %>
+  Gender:
+  <%= select_tag "gender", options_for_select([["", ""], "male", "female", "unknown"]) %>
+  Age bracket:
+  <%= select_tag "age_bracket", options_for_select([""] + %w[<10 10-20 20-30 30-40 40-50 50-60 60-70 70+ unknown]) %>
+  <%= text_field_tag "notes", "", placeholder: "Notes (optional)", size: 30 %>
+  <%= submit_tag "Save" %>
+<% end %>
+
 <h2>Reclassify</h2>
 <%= form_with url: reclassify_site_visitor_path(@visitor.site, @visitor), method: :post, local: true do |f| %>
   <%= f.label :model_config_id, "Model:" %>
