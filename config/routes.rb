@@ -2,8 +2,10 @@ Rails.application.routes.draw do
   resource :session
   resources :passwords, param: :token
   resources :users, only: %i[new create]
-  get  "signup", to: "users#new",     as: :signup
-  get  "login",  to: "sessions#new",  as: :login
+  get  "signup",      to: "users#new",       as: :signup
+  get  "login",       to: "sessions#new",    as: :login
+  get  "splash",      to: "landing#splash",  as: :splash
+  get  "how-it-works", to: "landing#how_it_works", as: :how_it_works
 
   resources :sites, param: :id do
     resources :visitors, only: :show do
@@ -37,7 +39,8 @@ Rails.application.routes.draw do
     end
   end
 
-  root "sites#index"
+  # Root: landing for visitors, dashboard for authenticated users
+  root "landing#splash"
 
   scope module: :ingest, defaults: { format: :json } do
     match "visitor/new-session", to: "visitors#new_session", via: [:post, :options]

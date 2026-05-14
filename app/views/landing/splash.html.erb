@@ -1,0 +1,95 @@
+<%# --- Hero ----------------------------------------------------------- %>
+<section class="hero-bg relative min-h-[100vh] flex items-center justify-center">
+  <div class="absolute inset-0 bg-gradient-to-b from-black/55 via-black/40 to-black/60"></div>
+
+  <div class="relative z-10 text-center text-white px-5 max-w-3xl">
+    <h1 class="font-light text-4xl sm:text-5xl md:text-6xl leading-tight tracking-tight">
+      Know what your <strong class="font-semibold">visitors</strong> are <strong class="font-semibold">like</strong>
+    </h1>
+    <p class="mt-5 text-lg sm:text-xl text-white/90 font-light">
+      Interact with individuals — not users.
+    </p>
+
+    <div class="mt-10">
+      <%= link_to "Try now, absolutely free", signup_path,
+                  class: "inline-block rounded-md bg-sky-500 hover:bg-sky-400 transition px-7 py-3 text-base font-semibold text-white shadow-lg" %>
+    </div>
+  </div>
+
+  <div class="absolute bottom-10 left-0 right-0 z-10 text-center text-white/90 text-sm">
+    <a href="#how-it-works" class="inline-flex flex-col items-center gap-2 floaty">
+      <span>Or scroll down to learn more</span>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"></path><path d="m19 12-7 7-7-7"></path></svg>
+    </a>
+  </div>
+</section>
+
+<%# --- Block 2: Know your users -------------------------------------- %>
+<section id="how-it-works" class="py-24 bg-white">
+  <div class="mx-auto max-w-5xl px-5 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+    <div>
+      <h2 class="font-light text-3xl sm:text-4xl text-zinc-900">
+        Know your users
+      </h2>
+      <p class="mt-4 text-zinc-700 font-light leading-relaxed">
+        A personality profiling system that turns ordinary visitor behavior into actionable insight, using:
+      </p>
+      <ul class="mt-4 space-y-2 text-zinc-700">
+        <li class="flex gap-3"><span class="text-sky-500">✓</span> Behavior metrics — mouse motion, scroll style, hesitation, click rhythm</li>
+        <li class="flex gap-3"><span class="text-sky-500">✓</span> AI-driven personality inference, tuned by your own training data</li>
+        <li class="flex gap-3"><span class="text-sky-500">✓</span> A simple JSON API and dashboard to read it all</li>
+      </ul>
+    </div>
+    <div>
+      <%= image_tag "landing/profile.png", class: "w-full max-w-sm mx-auto" %>
+    </div>
+  </div>
+</section>
+
+<%# --- Block 3: PX designers ------------------------------------------- %>
+<section class="py-24 bg-zinc-50">
+  <div class="mx-auto max-w-3xl px-5 text-center">
+    <h2 class="font-light text-3xl sm:text-4xl text-zinc-900 mb-10">
+      Today we have UX designers.<br>
+      The future will have <strong class="font-semibold">PX designers</strong>.
+    </h2>
+    <%= image_tag "landing/ux-design.jpg", class: "rounded-lg shadow-lg mx-auto" %>
+    <p class="mt-6 text-zinc-600">Personality-driven experience design starts with knowing who is on the other side of the screen.</p>
+  </div>
+</section>
+
+<%# --- Block 4: How it works ------------------------------------------ %>
+<section class="py-24 bg-white">
+  <div class="mx-auto max-w-5xl px-5">
+    <h2 class="font-light text-3xl sm:text-4xl text-center text-zinc-900 mb-12">How it works</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="text-center">
+        <div class="mx-auto w-12 h-12 rounded-full bg-sky-100 text-sky-600 flex items-center justify-center text-xl font-semibold">1</div>
+        <h3 class="mt-4 text-lg font-semibold">Install one line of code</h3>
+        <p class="mt-2 text-zinc-600 text-sm">Paste a script tag in your site's <code>&lt;body&gt;</code>. No setup, no cookies needed.</p>
+      </div>
+      <div class="text-center">
+        <div class="mx-auto w-12 h-12 rounded-full bg-sky-100 text-sky-600 flex items-center justify-center text-xl font-semibold">2</div>
+        <h3 class="mt-4 text-lg font-semibold">Collect behavior</h3>
+        <p class="mt-2 text-zinc-600 text-sm">Mouse motion, scroll, click hesitation and more — all anonymized.</p>
+      </div>
+      <div class="text-center">
+        <div class="mx-auto w-12 h-12 rounded-full bg-sky-100 text-sky-600 flex items-center justify-center text-xl font-semibold">3</div>
+        <h3 class="mt-4 text-lg font-semibold">Get personality profiles</h3>
+        <p class="mt-2 text-zinc-600 text-sm">Sales-ready labels like "Cautious Comparator" or "Quick Decider" with confidence scores.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%# --- Final CTA ------------------------------------------------------ %>
+<section class="bg-zinc-900 py-20 text-center">
+  <div class="mx-auto max-w-2xl px-5">
+    <h2 class="font-light text-3xl sm:text-4xl text-white">Ready to meet your visitors?</h2>
+    <p class="mt-3 text-zinc-300">Free to try. No card required.</p>
+    <div class="mt-8">
+      <%= link_to "Sign up for free", signup_path,
+                  class: "inline-block rounded-md bg-sky-500 hover:bg-sky-400 transition px-7 py-3 text-base font-semibold text-white shadow-lg" %>
+    </div>
+  </div>
+</section>
