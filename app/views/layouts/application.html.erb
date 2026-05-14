@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html class="h-full bg-zinc-50">
   <head>
     <title><%= content_for(:title) || "Person Scan" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -7,22 +7,45 @@
     <meta name="mobile-web-app-capable" content="yes">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-
     <%= yield :head %>
-
-    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
-    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
-
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="/icon.png">
-
-    <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
-    <%= yield %>
+  <body class="h-full text-zinc-900 antialiased">
+    <% if authenticated? %>
+      <header class="border-b border-zinc-200 bg-white">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div class="flex h-14 items-center justify-between">
+            <div class="flex items-center gap-6">
+              <%= link_to "Person Scan", root_path, class: "text-base font-semibold text-zinc-900" %>
+              <nav class="hidden md:flex items-center gap-5">
+                <%= link_to "Sites", sites_path, class: "nav-link" %>
+                <%= link_to "Models", model_configs_path, class: "nav-link" %>
+                <%= link_to "Training data", training_examples_path, class: "nav-link" %>
+                <%= link_to "Evaluations", evaluation_runs_path, class: "nav-link" %>
+              </nav>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-xs text-zinc-500"><%= Current.user&.email_address %></span>
+              <%= button_to "Log out", session_path, method: :delete, class: "btn btn-sm" %>
+            </div>
+          </div>
+        </div>
+      </header>
+    <% end %>
+
+    <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+      <% if flash[:notice] %>
+        <div class="mb-4 rounded-md border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800"><%= flash[:notice] %></div>
+      <% end %>
+      <% if flash[:alert] %>
+        <div class="mb-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"><%= flash[:alert] %></div>
+      <% end %>
+
+      <%= yield %>
+    </main>
   </body>
 </html>

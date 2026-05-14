@@ -1,18 +1,32 @@
-<h1>New site</h1>
+<div class="max-w-xl">
+  <p class="mb-3"><%= link_to "← Sites", sites_path, class: "nav-link" %></p>
+  <h1 class="text-2xl font-semibold mb-6">New site</h1>
 
-<%= form_with model: @site do |f| %>
-  <% if @site.errors.any? %>
-    <ul style="color:red">
-      <% @site.errors.full_messages.each do |msg| %><li><%= msg %></li><% end %>
-    </ul>
-  <% end %>
-  <p><%= f.label :name %><br><%= f.text_field :name, required: true %></p>
-  <p><%= f.label :url %> (optional)<br><%= f.url_field :url %></p>
-  <p>
-    <%= f.label :model_config_id, "Model (override system default)" %><br>
-    <%= f.collection_select :model_config_id, ModelConfig.active.order(:name), :id, :name, include_blank: "Use system default" %>
-  </p>
-  <p><%= f.submit "Create" %></p>
-<% end %>
-
-<p><%= link_to "Cancel", sites_path %></p>
+  <div class="card">
+    <%= form_with model: @site, class: "space-y-4" do |f| %>
+      <% if @site.errors.any? %>
+        <div class="rounded-md border border-red-200 bg-red-50 p-3">
+          <ul class="text-sm text-red-800 list-disc list-inside">
+            <% @site.errors.full_messages.each do |msg| %><li><%= msg %></li><% end %>
+          </ul>
+        </div>
+      <% end %>
+      <div>
+        <%= f.label :name, class: "label" %>
+        <%= f.text_field :name, required: true, class: "input" %>
+      </div>
+      <div>
+        <%= f.label :url, "URL (optional)", class: "label" %>
+        <%= f.url_field :url, class: "input" %>
+      </div>
+      <div>
+        <%= f.label :model_config_id, "Model (override system default)", class: "label" %>
+        <%= f.collection_select :model_config_id, ModelConfig.active.order(:name), :id, :name, { include_blank: "Use system default" }, { class: "select" } %>
+      </div>
+      <div class="flex gap-2">
+        <%= f.submit "Create", class: "btn btn-primary" %>
+        <%= link_to "Cancel", sites_path, class: "btn" %>
+      </div>
+    <% end %>
+  </div>
+</div>

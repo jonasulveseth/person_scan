@@ -1,12 +1,23 @@
-<%= tag.div(flash[:alert], style: "color:red") if flash[:alert] %>
-<%= tag.div(flash[:notice], style: "color:green") if flash[:notice] %>
+<div class="max-w-md mx-auto">
+  <h1 class="text-2xl font-semibold mb-6">Log in</h1>
 
-<%= form_with url: session_path do |form| %>
-  <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: "Enter your email address", value: params[:email_address] %><br>
-  <%= form.password_field :password, required: true, autocomplete: "current-password", placeholder: "Enter your password", maxlength: 72 %><br>
-  <%= form.submit "Sign in" %>
-<% end %>
-<br>
+  <div class="card">
+    <%= form_with url: session_path, class: "space-y-4" do |form| %>
+      <div>
+        <%= form.label :email_address, class: "label" %>
+        <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", value: params[:email_address], class: "input" %>
+      </div>
+      <div>
+        <%= form.label :password, class: "label" %>
+        <%= form.password_field :password, required: true, autocomplete: "current-password", maxlength: 72, class: "input" %>
+      </div>
+      <%= form.submit "Sign in", class: "btn btn-primary w-full" %>
+    <% end %>
+  </div>
 
-<%= link_to "Forgot password?", new_password_path %> &middot;
-<%= link_to "Create an account", signup_path %>
+  <p class="mt-4 text-sm text-zinc-600 text-center">
+    <%= link_to "Forgot password?", new_password_path, class: "text-zinc-900 underline" %>
+    &middot;
+    <%= link_to "Create an account", signup_path, class: "text-zinc-900 underline" %>
+  </p>
+</div>

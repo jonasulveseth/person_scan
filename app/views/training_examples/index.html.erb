@@ -1,54 +1,70 @@
-<p><%= link_to "&larr; Sites".html_safe, sites_path %></p>
+<div class="flex items-center justify-between mb-6">
+  <h1 class="text-2xl font-semibold">Training data <span class="text-zinc-400 font-normal text-base">(<%= @examples.size %>)</span></h1>
+  <div class="flex gap-2">
+    <%= link_to "+ Add manually", new_training_example_path, class: "btn" %>
+    <%= button_to "Import SQLite", import_legacy_training_examples_path, method: :post, class: "btn" %>
+    <%= button_to "Import CSV", import_csv_training_examples_path, method: :post, class: "btn btn-primary" %>
+  </div>
+</div>
 
-<h1>Training examples (<%= @examples.size %>)</h1>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+  <div class="card">
+    <h2 class="card-title">By source</h2>
+    <ul class="text-sm space-y-1">
+      <% @by_source.each do |s, n| %>
+        <li class="flex justify-between border-b border-zinc-100 py-1"><span class="text-zinc-600"><%= s %></span><span class="font-medium"><%= n %></span></li>
+      <% end %>
+    </ul>
+  </div>
+  <div class="card">
+    <h2 class="card-title">By gender</h2>
+    <ul class="text-sm space-y-1">
+      <% @by_gender.each do |g, n| %>
+        <li class="flex justify-between border-b border-zinc-100 py-1"><span class="text-zinc-600"><%= g || "(none)" %></span><span class="font-medium"><%= n %></span></li>
+      <% end %>
+    </ul>
+  </div>
+  <div class="card">
+    <h2 class="card-title">By age bracket</h2>
+    <ul class="text-sm space-y-1">
+      <% @by_age.sort_by { |k, _| k.to_s }.each do |a, n| %>
+        <li class="flex justify-between border-b border-zinc-100 py-1"><span class="text-zinc-600"><%= a || "(none)" %></span><span class="font-medium"><%= n %></span></li>
+      <% end %>
+    </ul>
+  </div>
+</div>
 
-<p>
-  <%= link_to "Add manually", new_training_example_path %> &middot;
-  <%= button_to "Import from legacy SQLite (~9 rows)", import_legacy_training_examples_path, method: :post, form: { style: "display:inline" } %> &middot;
-  <%= button_to "Import from legacy CSV (~1288 rows, gender.csv)", import_csv_training_examples_path, method: :post, form: { style: "display:inline" } %>
-</p>
-
-<h2>Distribution</h2>
-<p>
-  <strong>By source:</strong>
-  <% @by_source.each do |s, n| %><%= s %>: <%= n %> &middot; <% end %>
-</p>
-<p>
-  <strong>By gender:</strong>
-  <% @by_gender.each do |g, n| %><%= g || "(none)" %>: <%= n %> &middot; <% end %>
-</p>
-<p>
-  <strong>By age bracket:</strong>
-  <% @by_age.each do |a, n| %><%= a || "(none)" %>: <%= n %> &middot; <% end %>
-</p>
-
-<h2>Examples</h2>
-<table border="1" cellpadding="6" cellspacing="0">
-  <thead>
-    <tr>
-      <th>ID</th>
-      <th>Source</th>
-      <th>Gender</th>
-      <th>Age</th>
-      <th>Feature size</th>
-      <th>Notes</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @examples.each do |te| %>
+<div class="card p-0 overflow-hidden">
+  <table class="table">
+    <thead>
       <tr>
-        <td><%= link_to te.id, te %></td>
-        <td><%= te.source %></td>
-        <td><%= te.truth_gender %></td>
-        <td><%= te.truth_age_bracket %></td>
-        <td><%= te.features.is_a?(Hash) ? te.features.keys.size : 0 %> keys</td>
-        <td><%= te.notes&.truncate(60) %></td>
-        <td>
-          <%= link_to "Edit", edit_training_example_path(te) %> &middot;
-          <%= button_to "Delete", training_example_path(te), method: :delete, data: { turbo_confirm: "Sure?" }, form: { style: "display:inline" } %>
-        </td>
+        <th>ID</th>
+        <th>Source</th>
+        <th>Gender</th>
+        <th>Age</th>
+        <th>Features</th>
+        <th>Notes</th>
+        <th></th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      <% @examples.first(200).each do |te| %>
+        <tr>
+          <td><%= link_to te.id, te, class: "font-mono text-xs hover:underline" %></td>
+          <td><span class="pill"><%= te.source %></span></td>
+          <td><%= te.truth_gender %></td>
+          <td><%= te.truth_age_bracket %></td>
+          <td class="text-xs text-zinc-500"><%= te.features.is_a?(Hash) ? te.features.keys.size : 0 %> keys</td>
+          <td class="text-xs text-zinc-600"><%= te.notes&.truncate(50) %></td>
+          <td class="text-right">
+            <%= link_to "Edit", edit_training_example_path(te), class: "btn btn-sm" %>
+            <%= button_to "Delete", training_example_path(te), method: :delete, data: { turbo_confirm: "Sure?" }, class: "btn btn-sm btn-danger" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <% if @examples.size > 200 %>
+    <p class="px-5 py-3 text-xs text-zinc-500 border-t border-zinc-200">Showing first 200 of <%= @examples.size %>.</p>
+  <% end %>
+</div>

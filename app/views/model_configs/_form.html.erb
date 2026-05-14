@@ -1,34 +1,48 @@
-<%= form_with model: @model_config do |f| %>
+<%= form_with model: @model_config, class: "space-y-5" do |f| %>
   <% if @model_config.errors.any? %>
-    <ul style="color:red">
-      <% @model_config.errors.full_messages.each do |msg| %><li><%= msg %></li><% end %>
-    </ul>
+    <div class="rounded-md border border-red-200 bg-red-50 p-3">
+      <ul class="text-sm text-red-800 list-disc list-inside">
+        <% @model_config.errors.full_messages.each do |msg| %><li><%= msg %></li><% end %>
+      </ul>
+    </div>
   <% end %>
 
-  <p>
-    <%= f.label :name %> (internal identifier, e.g. "nebius-llama-3.3-70b")<br>
-    <%= f.text_field :name, required: true, size: 40 %>
-  </p>
+  <div class="card space-y-4">
+    <div>
+      <%= f.label :name, class: "label" %>
+      <span class="text-xs text-zinc-500">Internal identifier, e.g. "nebius-llama-3.3-70b"</span>
+      <%= f.text_field :name, required: true, class: "input mt-1" %>
+    </div>
 
-  <p>
-    <%= f.label :provider %><br>
-    <%= f.select :provider, @provider_options.map { |p, lbl| ["#{p} — #{lbl}", p] }, { prompt: "Choose…" } %>
-  </p>
+    <div>
+      <%= f.label :provider, class: "label" %>
+      <%= f.select :provider, @provider_options.map { |p, lbl| ["#{p} — #{lbl}", p] }, { prompt: "Choose…" }, class: "select" %>
+    </div>
 
-  <p>
-    <%= f.label :model_id %> (provider-specific model identifier, e.g. <code>meta-llama/Llama-3.3-70B-Instruct</code>, <code>gpt-4o-mini</code>, <code>claude-sonnet-4-6</code>)<br>
-    <%= f.text_field :model_id, required: true, size: 60 %>
-  </p>
+    <div>
+      <%= f.label :model_id, class: "label" %>
+      <span class="text-xs text-zinc-500">Provider-specific identifier, e.g. <code>meta-llama/Llama-3.3-70B-Instruct</code>, <code>gpt-4o-mini</code>, <code>claude-sonnet-4-6</code></span>
+      <%= f.text_field :model_id, required: true, class: "input mt-1 font-mono text-xs" %>
+    </div>
 
-  <p>
-    <%= f.label :prompt_template %> (used as <code>system</code> message)<br>
-    <%= f.text_area :prompt_template, rows: 18, cols: 100, required: true %>
-  </p>
+    <div class="flex gap-6">
+      <label class="flex items-center gap-2 text-sm">
+        <%= f.check_box :active %> Active
+      </label>
+      <label class="flex items-center gap-2 text-sm">
+        <%= f.check_box :is_default %> Set as system default
+      </label>
+    </div>
+  </div>
 
-  <p>
-    <%= f.check_box :active %> <%= f.label :active %><br>
-    <%= f.check_box :is_default %> <%= f.label :is_default, "Set as system default" %>
-  </p>
+  <div class="card">
+    <%= f.label :prompt_template, "Prompt template (system message)", class: "label" %>
+    <p class="text-xs text-zinc-500 mb-2">Sent as the <code>system</code> message before each visitor's features JSON.</p>
+    <%= f.text_area :prompt_template, rows: 22, required: true, class: "textarea font-mono text-xs" %>
+  </div>
 
-  <p><%= f.submit %></p>
+  <div class="flex gap-2">
+    <%= f.submit class: "btn btn-primary" %>
+    <%= link_to "Cancel", model_configs_path, class: "btn" %>
+  </div>
 <% end %>

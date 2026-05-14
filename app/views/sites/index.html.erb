@@ -1,22 +1,41 @@
-<h1>Your sites</h1>
-
-<p><%= link_to "New site", new_site_path %> &middot;
-   <%= link_to "Model configs", model_configs_path %> &middot;
-   <%= link_to "Training data", training_examples_path %> &middot;
-   <%= link_to "Evaluations", evaluation_runs_path %> &middot;
-   <%= button_to "Log out", session_path, method: :delete, form: { style: "display:inline" } %></p>
+<div class="flex items-center justify-between mb-6">
+  <h1 class="text-2xl font-semibold">Your sites</h1>
+  <%= link_to "+ New site", new_site_path, class: "btn btn-primary" %>
+</div>
 
 <% if @sites.empty? %>
-  <p>No sites yet. <%= link_to "Add your first site", new_site_path %> to get started.</p>
+  <div class="card text-center text-zinc-600">
+    No sites yet. <%= link_to "Add your first site", new_site_path, class: "text-zinc-900 underline" %> to get started.
+  </div>
 <% else %>
-  <ul>
-    <% @sites.each do |s| %>
-      <li>
-        <%= link_to s.name, site_path(s) %>
-        &mdash; <%= s.url %>
-        &mdash; <%= s.visitors.count %> visitors
-        <%= "(inactive)" unless s.active? %>
-      </li>
-    <% end %>
-  </ul>
+  <div class="card p-0 overflow-hidden">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>URL</th>
+          <th>Visitors</th>
+          <th>Model</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @sites.each do |s| %>
+          <tr>
+            <td><%= link_to s.name, site_path(s), class: "font-medium text-zinc-900 hover:underline" %></td>
+            <td class="text-zinc-600"><%= s.url.presence || "—" %></td>
+            <td><%= s.visitors.count %></td>
+            <td class="text-zinc-600 text-xs"><%= s.effective_model_config&.name || "—" %></td>
+            <td>
+              <% if s.active? %>
+                <span class="pill pill-green">active</span>
+              <% else %>
+                <span class="pill">inactive</span>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
 <% end %>

@@ -1,15 +1,32 @@
-<h1>Create account</h1>
+<div class="max-w-md mx-auto">
+  <h1 class="text-2xl font-semibold mb-6">Create account</h1>
 
-<%= form_with model: @user do |f| %>
-  <% if @user.errors.any? %>
-    <ul style="color:red">
-      <% @user.errors.full_messages.each do |msg| %><li><%= msg %></li><% end %>
-    </ul>
-  <% end %>
-  <p><%= f.label :email_address %><br><%= f.email_field :email_address, required: true, autofocus: true %></p>
-  <p><%= f.label :password %><br><%= f.password_field :password, required: true, minlength: 8 %></p>
-  <p><%= f.label :password_confirmation %><br><%= f.password_field :password_confirmation, required: true %></p>
-  <p><%= f.submit "Sign up" %></p>
-<% end %>
+  <div class="card">
+    <%= form_with model: @user, class: "space-y-4" do |f| %>
+      <% if @user.errors.any? %>
+        <div class="rounded-md border border-red-200 bg-red-50 p-3">
+          <ul class="text-sm text-red-800 list-disc list-inside">
+            <% @user.errors.full_messages.each do |msg| %><li><%= msg %></li><% end %>
+          </ul>
+        </div>
+      <% end %>
+      <div>
+        <%= f.label :email_address, class: "label" %>
+        <%= f.email_field :email_address, required: true, autofocus: true, class: "input" %>
+      </div>
+      <div>
+        <%= f.label :password, class: "label" %>
+        <%= f.password_field :password, required: true, minlength: 8, class: "input" %>
+      </div>
+      <div>
+        <%= f.label :password_confirmation, class: "label" %>
+        <%= f.password_field :password_confirmation, required: true, class: "input" %>
+      </div>
+      <%= f.submit "Sign up", class: "btn btn-primary w-full" %>
+    <% end %>
+  </div>
 
-<p><%= link_to "Already have an account? Log in", login_path %></p>
+  <p class="mt-4 text-sm text-zinc-600 text-center">
+    Already have an account? <%= link_to "Log in", login_path, class: "text-zinc-900 underline" %>
+  </p>
+</div>

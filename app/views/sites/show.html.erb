@@ -1,48 +1,57 @@
-<p><%= link_to "&larr; All sites".html_safe, sites_path %></p>
+<p class="mb-3"><%= link_to "← Sites", sites_path, class: "nav-link" %></p>
 
-<h1><%= @site.name %></h1>
-<p>
-  URL: <%= @site.url.presence || "(not set)" %> &middot;
-  Model: <strong><%= @site.effective_model_config&.name || "(none configured)" %></strong>
-  <%= "(site default)" if @site.model_config %>
-  &middot; <%= link_to "Edit", edit_site_path(@site) %>
-</p>
+<div class="flex items-start justify-between mb-6">
+  <div>
+    <h1 class="text-2xl font-semibold"><%= @site.name %></h1>
+    <p class="text-sm text-zinc-600 mt-1">
+      <%= @site.url.presence || "(no URL set)" %> &middot;
+      Model: <span class="font-medium text-zinc-800"><%= @site.effective_model_config&.name || "(none)" %></span>
+      <%= "(site override)" if @site.model_config %>
+    </p>
+  </div>
+  <div class="flex gap-2">
+    <%= link_to "Trends", trends_site_path(@site), class: "btn" %>
+    <%= link_to "API keys", site_api_keys_path(@site), class: "btn" %>
+    <%= link_to "Edit", edit_site_path(@site), class: "btn" %>
+  </div>
+</div>
 
-<p>
-  <%= link_to "Trends", trends_site_path(@site) %> &middot;
-  <%= link_to "API keys", site_api_keys_path(@site) %>
-</p>
+<div class="card mb-6">
+  <h2 class="card-title">Install snippet</h2>
+  <p class="text-sm text-zinc-600 mb-3">Add this to the bottom of your site's <code>&lt;body&gt;</code>:</p>
+  <pre class="bg-zinc-100 rounded-md p-3 overflow-auto text-xs"><%= @snippet %></pre>
+</div>
 
-<h2>Install snippet</h2>
-<p>Add this to the bottom of your site's <code>&lt;body&gt;</code>:</p>
-<pre style="background:#eee;padding:10px;overflow:auto"><%= @snippet %></pre>
+<div class="card p-0">
+  <div class="px-5 py-3 border-b border-zinc-200 flex items-center justify-between">
+    <h2 class="text-base font-semibold">Recent visitors <span class="text-zinc-400 font-normal">(<%= @site.visitors.count %> total)</span></h2>
+  </div>
 
-<h2>Recent visitors (<%= @site.visitors.count %> total)</h2>
-
-<% if @visitors.empty? %>
-  <p>No visitors recorded yet.</p>
-<% else %>
-  <table border="1" cellpadding="6" cellspacing="0">
-    <thead>
-      <tr>
-        <th>Fingerprint</th>
-        <th>Last seen</th>
-        <th>Events</th>
-        <th>Latest prediction</th>
-        <th>Confidence</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @visitors.each do |v| %>
-        <% pred = v.predictions.max_by(&:created_at) %>
+  <% if @visitors.empty? %>
+    <p class="px-5 py-6 text-sm text-zinc-600">No visitors recorded yet. Install the snippet above and load a page.</p>
+  <% else %>
+    <table class="table">
+      <thead>
         <tr>
-          <td><%= link_to v.fingerprint[0, 12], site_visitor_path(@site, v) %></td>
-          <td><%= v.last_seen_at&.strftime("%Y-%m-%d %H:%M") %></td>
-          <td><%= v.tracking_events.size + v.click_events.size + v.page_visits.size %></td>
-          <td><%= pred&.label || "—" %></td>
-          <td><%= pred ? "#{(pred.confidence * 100).round}%" : "—" %></td>
+          <th>Fingerprint</th>
+          <th>Last seen</th>
+          <th>Events</th>
+          <th>Personality</th>
+          <th>Confidence</th>
         </tr>
-      <% end %>
-    </tbody>
-  </table>
-<% end %>
+      </thead>
+      <tbody>
+        <% @visitors.each do |v| %>
+          <% pred = v.predictions.max_by(&:created_at) %>
+          <tr>
+            <td><%= link_to v.fingerprint[0, 12], site_visitor_path(@site, v), class: "font-mono text-xs text-zinc-900 hover:underline" %></td>
+            <td class="text-zinc-600"><%= v.last_seen_at&.strftime("%Y-%m-%d %H:%M") %></td>
+            <td><%= v.tracking_events.size + v.click_events.size + v.page_visits.size %></td>
+            <td><%= pred ? pred.label : "—" %></td>
+            <td><%= pred ? "#{(pred.confidence * 100).round}%" : "—" %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+</div>

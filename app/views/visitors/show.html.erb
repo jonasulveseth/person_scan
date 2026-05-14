@@ -1,56 +1,98 @@
-<p><%= link_to "&larr; Back to site".html_safe, site_path(@visitor.site) %></p>
+<p class="mb-3"><%= link_to "← #{@visitor.site.name}", site_path(@visitor.site), class: "nav-link" %></p>
 
-<h1>Visitor <code><%= @visitor.fingerprint[0, 12] %></code></h1>
-<p>First seen: <%= @visitor.first_seen_at %> &middot; Last seen: <%= @visitor.last_seen_at %></p>
+<h1 class="text-2xl font-semibold">Visitor <span class="font-mono text-base text-zinc-600"><%= @visitor.fingerprint[0, 12] %></span></h1>
+<p class="text-sm text-zinc-600 mb-6">
+  First seen <%= @visitor.first_seen_at&.strftime("%Y-%m-%d %H:%M") %> &middot;
+  Last seen <%= @visitor.last_seen_at&.strftime("%Y-%m-%d %H:%M") %>
+</p>
 
-<h2>Save as training example</h2>
-<%= form_with url: save_as_training_example_site_visitor_path(@visitor.site, @visitor), method: :post, local: true do %>
-  Gender:
-  <%= select_tag "gender", options_for_select([["", ""], "male", "female", "unknown"]) %>
-  Age bracket:
-  <%= select_tag "age_bracket", options_for_select([""] + %w[<10 10-20 20-30 30-40 40-50 50-60 60-70 70+ unknown]) %>
-  <%= text_field_tag "notes", "", placeholder: "Notes (optional)", size: 30 %>
-  <%= submit_tag "Save" %>
-<% end %>
-
-<h2>Reclassify</h2>
-<%= form_with url: reclassify_site_visitor_path(@visitor.site, @visitor), method: :post, local: true do |f| %>
-  <%= f.label :model_config_id, "Model:" %>
-  <%= f.select :model_config_id, @models.map { |m| [m.name, m.id] }, { include_blank: "(use site/system default)" } %>
-  <%= f.submit "Run classification" %>
-<% end %>
-
-<h2>Latest prediction</h2>
-<% if @prediction %>
-  <p><strong style="font-size:1.4em"><%= @prediction.label %></strong>
-     &middot; confidence <%= (@prediction.confidence * 100).round %>%
-     &middot; model <%= @prediction.model_config.name %></p>
-  <p><em><%= @prediction.raw.is_a?(Hash) ? @prediction.raw["rationale"] : nil %></em></p>
-  <h3>Dimensions</h3>
-  <ul>
-    <% @prediction.dimensions.each do |k, v| %>
-      <li><strong><%= k %></strong>: <%= v %></li>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+  <div class="lg:col-span-2 card">
+    <h2 class="card-title">Latest prediction</h2>
+    <% if @prediction %>
+      <div class="flex items-baseline gap-3 mb-2">
+        <span class="text-2xl font-semibold"><%= @prediction.label %></span>
+        <span class="pill"><%= (@prediction.confidence * 100).round %>% confidence</span>
+        <span class="text-xs text-zinc-500">via <%= @prediction.model_config.name %></span>
+      </div>
+      <% if (rationale = @prediction.raw.is_a?(Hash) ? @prediction.raw["rationale"] : nil) %>
+        <p class="text-sm text-zinc-700 italic mb-4"><%= rationale %></p>
+      <% end %>
+      <h3 class="text-sm font-semibold text-zinc-700 mb-2">Dimensions</h3>
+      <dl class="grid grid-cols-2 gap-x-6 gap-y-1 text-sm">
+        <% @prediction.dimensions.each do |k, v| %>
+          <div class="flex items-center justify-between border-b border-zinc-100 py-1">
+            <dt class="text-zinc-600"><%= k %></dt>
+            <dd class="font-medium"><%= v %></dd>
+          </div>
+        <% end %>
+      </dl>
+    <% else %>
+      <p class="text-sm text-zinc-500"><em>No prediction yet — send more events or wait for the queue.</em></p>
     <% end %>
-  </ul>
-<% else %>
-  <p><em>No prediction yet. Send more events or wait for the queue to process.</em></p>
-<% end %>
+  </div>
 
-<h2>All predictions (<%= @visitor.predictions.count %>)</h2>
-<% if @visitor.predictions.any? %>
-  <ul>
-    <% @visitor.predictions.order(created_at: :desc).each do |p| %>
-      <li><%= p.created_at.strftime("%Y-%m-%d %H:%M:%S") %> &mdash; <%= p.label %> (<%= (p.confidence * 100).round %>%)</li>
+  <div class="card">
+    <h2 class="card-title">Event counts</h2>
+    <dl class="space-y-2 text-sm">
+      <div class="flex justify-between border-b border-zinc-100 py-1"><dt>Tracking events</dt><dd class="font-medium"><%= @visitor.tracking_events.count %></dd></div>
+      <div class="flex justify-between border-b border-zinc-100 py-1"><dt>Click events</dt><dd class="font-medium"><%= @visitor.click_events.count %></dd></div>
+      <div class="flex justify-between py-1"><dt>Page visits</dt><dd class="font-medium"><%= @visitor.page_visits.count %></dd></div>
+    </dl>
+  </div>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+  <div class="card">
+    <h2 class="card-title">Reclassify</h2>
+    <%= form_with url: reclassify_site_visitor_path(@visitor.site, @visitor), method: :post, class: "flex flex-wrap items-end gap-2" do |f| %>
+      <div class="flex-1">
+        <%= f.label :model_config_id, "Model", class: "label" %>
+        <%= f.select :model_config_id, @models.map { |m| [m.name, m.id] }, { include_blank: "(site/system default)" }, { class: "select" } %>
+      </div>
+      <%= f.submit "Run", class: "btn btn-primary" %>
     <% end %>
-  </ul>
-<% end %>
+  </div>
 
-<h2>Computed features</h2>
-<pre style="background:#eee;padding:10px;overflow:auto"><%= JSON.pretty_generate(@features) %></pre>
+  <div class="card">
+    <h2 class="card-title">Save as training example</h2>
+    <%= form_with url: save_as_training_example_site_visitor_path(@visitor.site, @visitor), method: :post, class: "space-y-3" do %>
+      <div class="grid grid-cols-2 gap-2">
+        <div>
+          <label class="label">Gender</label>
+          <%= select_tag "gender", options_for_select([["", ""], "male", "female", "unknown"]), class: "select" %>
+        </div>
+        <div>
+          <label class="label">Age bracket</label>
+          <%= select_tag "age_bracket", options_for_select([""] + %w[<10 10-20 20-30 30-40 40-50 50-60 60-70 70+ unknown]), class: "select" %>
+        </div>
+      </div>
+      <%= text_field_tag "notes", "", placeholder: "Notes (optional)", class: "input" %>
+      <%= submit_tag "Save example", class: "btn btn-primary" %>
+    <% end %>
+  </div>
+</div>
 
-<h2>Raw event counts</h2>
-<ul>
-  <li>Tracking events: <%= @visitor.tracking_events.count %></li>
-  <li>Click events: <%= @visitor.click_events.count %></li>
-  <li>Page visits: <%= @visitor.page_visits.count %></li>
-</ul>
+<div class="card mb-6">
+  <h2 class="card-title">All predictions (<%= @visitor.predictions.count %>)</h2>
+  <% if @visitor.predictions.any? %>
+    <table class="table">
+      <thead><tr><th>When</th><th>Model</th><th>Label</th><th class="text-right">Confidence</th></tr></thead>
+      <tbody>
+        <% @visitor.predictions.includes(:model_config).order(created_at: :desc).each do |p| %>
+          <tr>
+            <td class="text-zinc-500"><%= p.created_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
+            <td class="text-xs text-zinc-600"><%= p.model_config.name %></td>
+            <td><%= p.label %></td>
+            <td class="text-right font-medium"><%= (p.confidence * 100).round %>%</td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+</div>
+
+<div class="card">
+  <h2 class="card-title">Computed features</h2>
+  <pre class="bg-zinc-100 rounded-md p-3 overflow-auto text-xs"><%= JSON.pretty_generate(@features) %></pre>
+</div>

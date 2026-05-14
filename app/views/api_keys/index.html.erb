@@ -1,37 +1,51 @@
-<p><%= link_to "&larr; Site".html_safe, site_path(@site) %></p>
+<p class="mb-3"><%= link_to "← #{@site.name}", site_path(@site), class: "nav-link" %></p>
 
-<h1>API keys for <%= @site.name %></h1>
+<h1 class="text-2xl font-semibold mb-2">API keys</h1>
+<p class="text-sm text-zinc-600 mb-6">Use these in <code>Authorization: Bearer …</code> when calling <code>/api/v1/…</code> for <strong><%= @site.name %></strong>.</p>
 
-<p>Use these in the <code>Authorization: Bearer ...</code> header when calling <code>/api/v1/...</code> for this site.</p>
-
-<%= form_with url: site_api_keys_path(@site), method: :post, local: true do %>
-  <%= text_field_tag :name, "", placeholder: "Key name (e.g. 'prod backend')", size: 30 %>
-  <%= submit_tag "Generate new API key" %>
-<% end %>
+<div class="card mb-6">
+  <h2 class="card-title">Generate new key</h2>
+  <%= form_with url: site_api_keys_path(@site), method: :post, class: "flex flex-wrap items-end gap-2" do %>
+    <div class="flex-1 min-w-48">
+      <label class="label">Key name</label>
+      <%= text_field_tag :name, "", placeholder: "e.g. 'prod backend'", class: "input" %>
+    </div>
+    <%= submit_tag "Generate", class: "btn btn-primary" %>
+  <% end %>
+  <p class="text-xs text-zinc-500 mt-2">The token will be shown once in the success banner — copy it immediately.</p>
+</div>
 
 <% if @api_keys.any? %>
-  <table border="1" cellpadding="6" cellspacing="0">
-    <thead>
-      <tr><th>Name</th><th>Token</th><th>Active</th><th>Last used</th><th>Created</th><th></th></tr>
-    </thead>
-    <tbody>
-      <% @api_keys.each do |k| %>
-        <tr<%= ' style="opacity:.5"'.html_safe unless k.active? %>>
-          <td><%= k.name %></td>
-          <td><code><%= k.masked %></code></td>
-          <td><%= k.active? ? "yes" : "revoked" %></td>
-          <td><%= k.last_used_at&.strftime("%Y-%m-%d %H:%M") || "—" %></td>
-          <td><%= k.created_at.strftime("%Y-%m-%d") %></td>
-          <td>
-            <% if k.active? %>
-              <%= button_to "Revoke", revoke_site_api_key_path(@site, k), method: :post, form: { style: "display:inline" } %>
-            <% end %>
-            <%= button_to "Delete", site_api_key_path(@site, k), method: :delete, data: { turbo_confirm: "Delete permanently?" }, form: { style: "display:inline" } %>
-          </td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
+  <div class="card p-0 overflow-hidden">
+    <table class="table">
+      <thead>
+        <tr><th>Name</th><th>Token</th><th>Status</th><th>Last used</th><th>Created</th><th></th></tr>
+      </thead>
+      <tbody>
+        <% @api_keys.each do |k| %>
+          <tr<%= ' class="opacity-50"'.html_safe unless k.active? %>>
+            <td class="font-medium"><%= k.name %></td>
+            <td class="font-mono text-xs"><%= k.masked %></td>
+            <td>
+              <% if k.active? %>
+                <span class="pill pill-green">active</span>
+              <% else %>
+                <span class="pill pill-red">revoked</span>
+              <% end %>
+            </td>
+            <td class="text-xs text-zinc-500"><%= k.last_used_at&.strftime("%Y-%m-%d %H:%M") || "—" %></td>
+            <td class="text-xs text-zinc-500"><%= k.created_at.strftime("%Y-%m-%d") %></td>
+            <td class="text-right">
+              <% if k.active? %>
+                <%= button_to "Revoke", revoke_site_api_key_path(@site, k), method: :post, class: "btn btn-sm" %>
+              <% end %>
+              <%= button_to "Delete", site_api_key_path(@site, k), method: :delete, data: { turbo_confirm: "Delete permanently?" }, class: "btn btn-sm btn-danger" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
 <% else %>
-  <p>No API keys yet.</p>
+  <div class="card text-center text-sm text-zinc-500">No API keys yet.</div>
 <% end %>

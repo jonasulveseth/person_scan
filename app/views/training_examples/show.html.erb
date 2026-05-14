@@ -1,21 +1,38 @@
-<p><%= link_to "&larr; Training examples".html_safe, training_examples_path %></p>
+<p class="mb-3"><%= link_to "← Training data", training_examples_path, class: "nav-link" %></p>
 
-<h1>Training example #<%= @example.id %></h1>
-<p>
-  Source: <%= @example.source %> &middot;
-  Visitor: <%= @example.visitor_id ? link_to("visitor #{@example.visitor_id}", site_visitor_path(@example.visitor.site, @example.visitor)) : "(no visitor link)" %> &middot;
-  Legacy cookie: <%= @example.legacy_cookie_id %>
-</p>
+<div class="flex items-start justify-between mb-6">
+  <div>
+    <h1 class="text-2xl font-semibold">Training example #<%= @example.id %></h1>
+    <p class="text-sm text-zinc-600 mt-1">
+      <span class="pill"><%= @example.source %></span>
+      <% if @example.visitor_id %>
+        &middot; <%= link_to "visitor #{@example.visitor_id}", site_visitor_path(@example.visitor.site, @example.visitor), class: "text-zinc-900 underline" %>
+      <% end %>
+      <% if @example.legacy_cookie_id %>
+        &middot; <span class="font-mono text-xs"><%= @example.legacy_cookie_id %></span>
+      <% end %>
+    </p>
+  </div>
+  <%= link_to "Edit", edit_training_example_path(@example), class: "btn btn-primary" %>
+</div>
 
-<h2>Ground truth</h2>
-<ul>
-  <% @example.ground_truth.each do |k, v| %><li><strong><%= k %></strong>: <%= v %></li><% end %>
-</ul>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <div class="card">
+    <h2 class="card-title">Ground truth</h2>
+    <dl class="space-y-1 text-sm">
+      <% @example.ground_truth.each do |k, v| %>
+        <div class="flex justify-between border-b border-zinc-100 py-1"><dt class="text-zinc-600"><%= k %></dt><dd class="font-medium"><%= v %></dd></div>
+      <% end %>
+    </dl>
+  </div>
 
-<h2>Features</h2>
-<pre style="background:#eee;padding:10px;overflow:auto"><%= JSON.pretty_generate(@example.features) %></pre>
+  <div class="card">
+    <h2 class="card-title">Notes</h2>
+    <p class="text-sm text-zinc-700"><%= simple_format(@example.notes.to_s) %></p>
+  </div>
+</div>
 
-<h2>Notes</h2>
-<p><%= simple_format(@example.notes.to_s) %></p>
-
-<p><%= link_to "Edit", edit_training_example_path(@example) %></p>
+<div class="card mt-4">
+  <h2 class="card-title">Features</h2>
+  <pre class="bg-zinc-100 rounded-md p-3 overflow-auto text-xs"><%= JSON.pretty_generate(@example.features) %></pre>
+</div>

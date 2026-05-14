@@ -1,26 +1,39 @@
-<%= form_with model: @example do |f| %>
+<%= form_with model: @example, class: "space-y-5" do |f| %>
   <% if @example.errors.any? %>
-    <ul style="color:red">
-      <% @example.errors.full_messages.each do |msg| %><li><%= msg %></li><% end %>
-    </ul>
+    <div class="rounded-md border border-red-200 bg-red-50 p-3">
+      <ul class="text-sm text-red-800 list-disc list-inside">
+        <% @example.errors.full_messages.each do |msg| %><li><%= msg %></li><% end %>
+      </ul>
+    </div>
   <% end %>
-  <p>
-    <%= f.label :source %><br>
-    <%= f.select :source, TrainingExample::SOURCES.map { |s| [s, s] } %>
-  </p>
-  <p>
-    Ground truth — gender:
-    <%= f.select :gender, [["", ""], ["male", "male"], ["female", "female"], ["unknown", "unknown"]], selected: @example.truth_gender %>
-    age bracket:
-    <%= f.select :age_bracket, [["", ""]] + %w[<10 10-20 20-30 30-40 40-50 50-60 60-70 70+ unknown].map { |b| [b, b] }, selected: @example.truth_age_bracket %>
-  </p>
-  <p>
-    <%= f.label :notes %><br>
-    <%= f.text_area :notes, rows: 3, cols: 80 %>
-  </p>
-  <p>
-    Features (JSON; leave as-is if imported):<br>
-    <%= f.text_area :features_json, rows: 10, cols: 80, value: JSON.pretty_generate(@example.features || {}) %>
-  </p>
-  <p><%= f.submit %></p>
+
+  <div class="card space-y-4">
+    <div>
+      <%= f.label :source, class: "label" %>
+      <%= f.select :source, TrainingExample::SOURCES.map { |s| [s, s] }, {}, class: "select" %>
+    </div>
+    <div class="grid grid-cols-2 gap-3">
+      <div>
+        <label class="label">Ground truth — Gender</label>
+        <%= f.select :gender, [["", ""], ["male", "male"], ["female", "female"], ["unknown", "unknown"]], { selected: @example.truth_gender }, class: "select" %>
+      </div>
+      <div>
+        <label class="label">Age bracket</label>
+        <%= f.select :age_bracket, [["", ""]] + %w[<10 10-20 20-30 30-40 40-50 50-60 60-70 70+ unknown].map { |b| [b, b] }, { selected: @example.truth_age_bracket }, class: "select" %>
+      </div>
+    </div>
+    <div>
+      <%= f.label :notes, class: "label" %>
+      <%= f.text_area :notes, rows: 3, class: "textarea" %>
+    </div>
+    <div>
+      <label class="label">Features (JSON)</label>
+      <%= f.text_area :features_json, rows: 10, value: JSON.pretty_generate(@example.features || {}), class: "textarea font-mono text-xs" %>
+    </div>
+  </div>
+
+  <div class="flex gap-2">
+    <%= f.submit class: "btn btn-primary" %>
+    <%= link_to "Cancel", training_examples_path, class: "btn" %>
+  </div>
 <% end %>
