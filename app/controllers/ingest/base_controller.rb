@@ -24,6 +24,10 @@ module Ingest
       @visitor.update_column(:last_seen_at, Time.current)
     end
 
+    def enqueue_classification
+      ClassifyVisitorJob.perform_later(@visitor.id) if @visitor
+    end
+
     def set_cors_headers
       response.headers["Access-Control-Allow-Origin"] = request.headers["Origin"] || "*"
       response.headers["Access-Control-Allow-Methods"] = "POST, OPTIONS"

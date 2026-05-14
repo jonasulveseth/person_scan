@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_05_14_122412) do
+ActiveRecord::Schema[8.0].define(version: 2026_05_14_133416) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -37,6 +37,19 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_14_122412) do
     t.index ["visitor_id"], name: "index_click_events_on_visitor_id"
   end
 
+  create_table "model_configs", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "provider", null: false
+    t.string "model_id", null: false
+    t.text "prompt_template", null: false
+    t.boolean "active", default: true, null: false
+    t.boolean "is_default", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["is_default"], name: "index_model_configs_on_is_default", unique: true, where: "(is_default = true)"
+    t.index ["name"], name: "index_model_configs_on_name", unique: true
+  end
+
   create_table "page_visits", force: :cascade do |t|
     t.bigint "visitor_id", null: false
     t.bigint "site_id", null: false
@@ -48,6 +61,19 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_14_122412) do
     t.datetime "updated_at", null: false
     t.index ["site_id"], name: "index_page_visits_on_site_id"
     t.index ["visitor_id"], name: "index_page_visits_on_visitor_id"
+  end
+
+  create_table "predictions", force: :cascade do |t|
+    t.bigint "visitor_id", null: false
+    t.bigint "model_config_id", null: false
+    t.jsonb "dimensions"
+    t.string "label"
+    t.float "confidence"
+    t.jsonb "raw"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["model_config_id"], name: "index_predictions_on_model_config_id"
+    t.index ["visitor_id"], name: "index_predictions_on_visitor_id"
   end
 
   create_table "sessions", force: :cascade do |t|
@@ -99,6 +125,15 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_14_122412) do
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
   end
 
+  create_table "visitor_features", force: :cascade do |t|
+    t.bigint "visitor_id", null: false
+    t.jsonb "features", default: {}, null: false
+    t.datetime "computed_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["visitor_id"], name: "index_visitor_features_on_visitor_id", unique: true
+  end
+
   create_table "visitors", force: :cascade do |t|
     t.bigint "site_id", null: false
     t.string "fingerprint", null: false
@@ -128,9 +163,12 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_14_122412) do
   add_foreign_key "click_events", "visitors"
   add_foreign_key "page_visits", "sites"
   add_foreign_key "page_visits", "visitors"
+  add_foreign_key "predictions", "model_configs"
+  add_foreign_key "predictions", "visitors"
   add_foreign_key "sessions", "users"
   add_foreign_key "sites", "users"
   add_foreign_key "tracking_events", "sites"
   add_foreign_key "tracking_events", "visitors"
+  add_foreign_key "visitor_features", "visitors"
   add_foreign_key "visitors", "sites"
 end

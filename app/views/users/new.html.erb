@@ -1,0 +1,15 @@
+<h1>Create account</h1>
+
+<%= form_with model: @user do |f| %>
+  <% if @user.errors.any? %>
+    <ul style="color:red">
+      <% @user.errors.full_messages.each do |msg| %><li><%= msg %></li><% end %>
+    </ul>
+  <% end %>
+  <p><%= f.label :email_address %><br><%= f.email_field :email_address, required: true, autofocus: true %></p>
+  <p><%= f.label :password %><br><%= f.password_field :password, required: true, minlength: 8 %></p>
+  <p><%= f.label :password_confirmation %><br><%= f.password_field :password_confirmation, required: true %></p>
+  <p><%= f.submit "Sign up" %></p>
+<% end %>
+
+<p><%= link_to "Already have an account? Log in", login_path %></p>

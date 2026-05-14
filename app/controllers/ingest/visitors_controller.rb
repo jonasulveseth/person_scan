@@ -51,6 +51,7 @@ module Ingest
         adblock: to_bool(payload["adblock"])
       )
 
+      enqueue_classification
       head :no_content
     end
 

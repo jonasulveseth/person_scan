@@ -1,0 +1,39 @@
+<p><%= link_to "&larr; Back to site".html_safe, site_path(@visitor.site) %></p>
+
+<h1>Visitor <code><%= @visitor.fingerprint[0, 12] %></code></h1>
+<p>First seen: <%= @visitor.first_seen_at %> &middot; Last seen: <%= @visitor.last_seen_at %></p>
+
+<h2>Latest prediction</h2>
+<% if @prediction %>
+  <p><strong style="font-size:1.4em"><%= @prediction.label %></strong>
+     &middot; confidence <%= (@prediction.confidence * 100).round %>%
+     &middot; model <%= @prediction.model_config.name %></p>
+  <p><em><%= @prediction.raw.is_a?(Hash) ? @prediction.raw["rationale"] : nil %></em></p>
+  <h3>Dimensions</h3>
+  <ul>
+    <% @prediction.dimensions.each do |k, v| %>
+      <li><strong><%= k %></strong>: <%= v %></li>
+    <% end %>
+  </ul>
+<% else %>
+  <p><em>No prediction yet. Send more events or wait for the queue to process.</em></p>
+<% end %>
+
+<h2>All predictions (<%= @visitor.predictions.count %>)</h2>
+<% if @visitor.predictions.any? %>
+  <ul>
+    <% @visitor.predictions.order(created_at: :desc).each do |p| %>
+      <li><%= p.created_at.strftime("%Y-%m-%d %H:%M:%S") %> &mdash; <%= p.label %> (<%= (p.confidence * 100).round %>%)</li>
+    <% end %>
+  </ul>
+<% end %>
+
+<h2>Computed features</h2>
+<pre style="background:#eee;padding:10px;overflow:auto"><%= JSON.pretty_generate(@features) %></pre>
+
+<h2>Raw event counts</h2>
+<ul>
+  <li>Tracking events: <%= @visitor.tracking_events.count %></li>
+  <li>Click events: <%= @visitor.click_events.count %></li>
+  <li>Page visits: <%= @visitor.page_visits.count %></li>
+</ul>

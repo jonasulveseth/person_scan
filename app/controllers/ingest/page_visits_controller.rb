@@ -23,6 +23,7 @@ module Ingest
         leave: leaving,
         click_data: click_data
       )
+      enqueue_classification
       head :no_content
     end
   end

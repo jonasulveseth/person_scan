@@ -21,6 +21,7 @@ module Ingest
         mouse_acceleration: parse_csv_ints(params[:mouse_acceleration]),
         text_analyze: params[:text_analyze]
       )
+      enqueue_classification
       head :no_content
     end
 

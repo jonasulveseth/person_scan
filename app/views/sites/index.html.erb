@@ -1,0 +1,19 @@
+<h1>Your sites</h1>
+
+<p><%= link_to "New site", new_site_path %> &middot;
+   <%= button_to "Log out", session_path, method: :delete, form: { style: "display:inline" } %></p>
+
+<% if @sites.empty? %>
+  <p>No sites yet. <%= link_to "Add your first site", new_site_path %> to get started.</p>
+<% else %>
+  <ul>
+    <% @sites.each do |s| %>
+      <li>
+        <%= link_to s.name, site_path(s) %>
+        &mdash; <%= s.url %>
+        &mdash; <%= s.visitors.count %> visitors
+        <%= "(inactive)" unless s.active? %>
+      </li>
+    <% end %>
+  </ul>
+<% end %>

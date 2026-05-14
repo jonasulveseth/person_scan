@@ -1,0 +1,38 @@
+<p><%= link_to "&larr; All sites".html_safe, sites_path %></p>
+
+<h1><%= @site.name %></h1>
+<p>URL: <%= @site.url.presence || "(not set)" %></p>
+
+<h2>Install snippet</h2>
+<p>Add this to the bottom of your site's <code>&lt;body&gt;</code>:</p>
+<pre style="background:#eee;padding:10px;overflow:auto"><%= @snippet %></pre>
+
+<h2>Recent visitors (<%= @site.visitors.count %> total)</h2>
+
+<% if @visitors.empty? %>
+  <p>No visitors recorded yet.</p>
+<% else %>
+  <table border="1" cellpadding="6" cellspacing="0">
+    <thead>
+      <tr>
+        <th>Fingerprint</th>
+        <th>Last seen</th>
+        <th>Events</th>
+        <th>Latest prediction</th>
+        <th>Confidence</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @visitors.each do |v| %>
+        <% pred = v.predictions.max_by(&:created_at) %>
+        <tr>
+          <td><%= link_to v.fingerprint[0, 12], site_visitor_path(@site, v) %></td>
+          <td><%= v.last_seen_at&.strftime("%Y-%m-%d %H:%M") %></td>
+          <td><%= v.tracking_events.size + v.click_events.size + v.page_visits.size %></td>
+          <td><%= pred&.label || "—" %></td>
+          <td><%= pred ? "#{(pred.confidence * 100).round}%" : "—" %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>

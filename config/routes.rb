@@ -1,6 +1,15 @@
 Rails.application.routes.draw do
   resource :session
   resources :passwords, param: :token
+  resources :users, only: %i[new create]
+  get  "signup", to: "users#new",     as: :signup
+  get  "login",  to: "sessions#new",  as: :login
+
+  resources :sites, param: :id do
+    resources :visitors, only: :show
+  end
+
+  root "sites#index"
 
   scope module: :ingest, defaults: { format: :json } do
     match "visitor/new-session", to: "visitors#new_session", via: [:post, :options]
