@@ -18,41 +18,59 @@
     <style>body { font-family: 'Source Sans 3', system-ui, sans-serif; }</style>
   </head>
 
-  <body class="h-full text-stone-900 antialiased">
+  <body class="min-h-screen flex flex-col text-stone-900 antialiased bg-app">
     <% if authenticated? %>
-      <header class="border-b border-stone-200 bg-white">
+      <%# Rich amber/brown accent line, echoes the auth brand panel %>
+      <div class="h-1 bg-gradient-to-r from-amber-900 via-amber-800 to-stone-900"></div>
+
+      <header class="border-b border-amber-900/10 bg-app-header shadow-[0_1px_0_rgba(120,53,15,0.04)]">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div class="flex h-14 items-center justify-between">
-            <div class="flex items-center gap-6">
-              <%= link_to root_path, class: "flex items-center gap-2" do %>
-                <span class="inline-block w-2 h-2 rounded-full bg-amber-800"></span>
-                <span class="text-base font-semibold text-stone-900">Person Scan</span>
+          <div class="flex h-16 items-center justify-between">
+            <div class="flex items-center gap-8">
+              <%= link_to sites_path, class: "flex items-center gap-2 group" do %>
+                <span class="inline-block w-2 h-2 rounded-full bg-amber-800 group-hover:bg-amber-900 transition"></span>
+                <span class="text-base font-semibold tracking-tight text-stone-900">Person Scan</span>
               <% end %>
-              <nav class="hidden md:flex items-center gap-5">
-                <%= link_to "Sites", sites_path, class: "nav-link" %>
-                <%= link_to "Models", model_configs_path, class: "nav-link" %>
-                <%= link_to "Training data", training_examples_path, class: "nav-link" %>
-                <%= link_to "Evaluations", evaluation_runs_path, class: "nav-link" %>
+              <nav class="hidden md:flex items-center gap-1 h-16">
+                <%= link_to "Sites",         sites_path,             class: nav_link_class(sites_path) %>
+                <%= link_to "Models",        model_configs_path,     class: nav_link_class(model_configs_path) %>
+                <%= link_to "Training data", training_examples_path, class: nav_link_class(training_examples_path) %>
+                <%= link_to "Evaluations",   evaluation_runs_path,   class: nav_link_class(evaluation_runs_path) %>
               </nav>
             </div>
             <div class="flex items-center gap-3">
-              <span class="text-xs text-stone-500"><%= Current.user&.email_address %></span>
-              <%= button_to "Log out", session_path, method: :delete, class: "btn btn-sm" %>
+              <span class="hidden sm:inline-flex items-center gap-2 text-xs text-stone-600">
+                <span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                <%= Current.user&.email_address %>
+              </span>
+              <%= button_to "Log out", session_path, method: :delete, class: "btn btn-sm", form: { class: "inline" } %>
             </div>
           </div>
         </div>
       </header>
     <% end %>
 
-    <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+    <main class="flex-1 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
       <% if flash[:notice] %>
-        <div class="mb-4 rounded-md border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900"><%= flash[:notice] %></div>
+        <div class="mb-5 rounded-md border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900"><%= flash[:notice] %></div>
       <% end %>
       <% if flash[:alert] %>
-        <div class="mb-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"><%= flash[:alert] %></div>
+        <div class="mb-5 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"><%= flash[:alert] %></div>
       <% end %>
 
       <%= yield %>
     </main>
+
+    <% if authenticated? %>
+      <footer class="mt-auto border-t border-amber-900/10 bg-app-header">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-5 flex flex-wrap items-center justify-between gap-3 text-xs text-stone-500">
+          <div class="flex items-center gap-2">
+            <span class="inline-block w-1.5 h-1.5 rounded-full bg-amber-800"></span>
+            <span>© <%= Date.current.year %> Person Scan</span>
+          </div>
+          <span class="italic">Behavior-driven personality insights.</span>
+        </div>
+      </footer>
+    <% end %>
   </body>
 </html>

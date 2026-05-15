@@ -1,15 +1,20 @@
-<p class="mb-3"><%= link_to "← Training data", training_examples_path, class: "nav-link" %></p>
+<%= link_to training_examples_path, class: "back-link" do %>
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg>
+  Training data
+<% end %>
 
-<div class="flex items-start justify-between mb-6">
+<div class="flex flex-wrap items-start justify-between gap-3 mb-8">
   <div>
-    <h1 class="text-2xl font-semibold">Training example #<%= @example.id %></h1>
-    <p class="text-sm text-zinc-600 mt-1">
+    <h1 class="page-title">Training example <span class="text-stone-400">#<%= @example.id %></span></h1>
+    <p class="page-subtitle">
       <span class="pill"><%= @example.source %></span>
       <% if @example.visitor_id %>
-        &middot; <%= link_to "visitor #{@example.visitor_id}", site_visitor_path(@example.visitor.site, @example.visitor), class: "text-zinc-900 underline" %>
+        <span class="text-stone-300">·</span>
+        <%= link_to "visitor #{@example.visitor_id}", site_visitor_path(@example.visitor.site, @example.visitor), class: "text-amber-800 hover:underline" %>
       <% end %>
       <% if @example.legacy_cookie_id %>
-        &middot; <span class="font-mono text-xs"><%= @example.legacy_cookie_id %></span>
+        <span class="text-stone-300">·</span>
+        <span class="font-mono text-xs"><%= @example.legacy_cookie_id %></span>
       <% end %>
     </p>
   </div>
@@ -21,18 +26,18 @@
     <h2 class="card-title">Ground truth</h2>
     <dl class="space-y-1 text-sm">
       <% @example.ground_truth.each do |k, v| %>
-        <div class="flex justify-between border-b border-zinc-100 py-1"><dt class="text-zinc-600"><%= k %></dt><dd class="font-medium"><%= v %></dd></div>
+        <div class="flex justify-between border-b border-stone-100 py-1"><dt class="text-stone-600"><%= k %></dt><dd class="font-medium"><%= v %></dd></div>
       <% end %>
     </dl>
   </div>
 
   <div class="card">
     <h2 class="card-title">Notes</h2>
-    <p class="text-sm text-zinc-700"><%= simple_format(@example.notes.to_s) %></p>
+    <p class="text-sm text-stone-700"><%= simple_format(@example.notes.to_s) %></p>
   </div>
 </div>
 
 <div class="card mt-4">
   <h2 class="card-title">Features</h2>
-  <pre class="bg-zinc-100 rounded-md p-3 overflow-auto text-xs"><%= JSON.pretty_generate(@example.features) %></pre>
+  <pre class="code-block"><%= JSON.pretty_generate(@example.features) %></pre>
 </div>

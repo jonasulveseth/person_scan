@@ -1,6 +1,9 @@
 <div class="max-w-xl">
-  <p class="mb-3"><%= link_to "← #{@site.name}", site_path(@site), class: "nav-link" %></p>
-  <h1 class="text-2xl font-semibold mb-6">Edit <%= @site.name %></h1>
+  <%= link_to site_path(@site), class: "back-link" do %>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg>
+    <%= @site.name %>
+  <% end %>
+  <h1 class="page-title mb-6">Edit <%= @site.name %></h1>
 
   <div class="card">
     <%= form_with model: @site, class: "space-y-4" do |f| %>

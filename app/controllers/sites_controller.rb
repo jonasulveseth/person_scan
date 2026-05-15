@@ -20,7 +20,9 @@ class SitesController < ApplicationController
 
   def show
     @visitors = @site.visitors.includes(:predictions).order(last_seen_at: :desc).limit(50)
-    @snippet = view_context.content_tag(:script, "", src: "#{request.base_url}/t.js?site=#{@site.public_key}")
+    # Plain (non-html_safe) string so ERB escapes the angle brackets when
+    # rendered inside <pre> — otherwise the browser would execute the tag.
+    @snippet = %(<script src="#{request.base_url}/t.js?site=#{@site.public_key}"></script>)
   end
 
   def trends

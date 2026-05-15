@@ -1,11 +1,20 @@
-<div class="flex items-center justify-between mb-6">
-  <h1 class="text-2xl font-semibold">Your sites</h1>
+<div class="flex flex-wrap items-end justify-between gap-3 mb-8">
+  <div>
+    <h1 class="page-title">Your sites</h1>
+    <p class="page-subtitle">Each site collects behavior and gets its own personality model.</p>
+  </div>
   <%= link_to "+ New site", new_site_path, class: "btn btn-primary" %>
 </div>
 
 <% if @sites.empty? %>
-  <div class="card text-center text-zinc-600">
-    No sites yet. <%= link_to "Add your first site", new_site_path, class: "text-zinc-900 underline" %> to get started.
+  <div class="card text-center py-12">
+    <div class="mx-auto w-10 h-10 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center mb-3">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+    </div>
+    <p class="text-stone-700">No sites yet.</p>
+    <p class="text-sm text-stone-500 mt-1">
+      <%= link_to "Add your first site", new_site_path, class: "text-amber-800 hover:underline font-medium" %> to get started.
+    </p>
   </div>
 <% else %>
   <div class="card p-0 overflow-hidden">
@@ -22,10 +31,10 @@
       <tbody>
         <% @sites.each do |s| %>
           <tr>
-            <td><%= link_to s.name, site_path(s), class: "font-medium text-zinc-900 hover:underline" %></td>
-            <td class="text-zinc-600"><%= s.url.presence || "—" %></td>
+            <td><%= link_to s.name, site_path(s), class: "font-medium text-stone-900 hover:underline" %></td>
+            <td class="text-stone-600"><%= s.url.presence || "—" %></td>
             <td><%= s.visitors.count %></td>
-            <td class="text-zinc-600 text-xs"><%= s.effective_model_config&.name || "—" %></td>
+            <td class="text-stone-600 text-xs"><%= s.effective_model_config&.name || "—" %></td>
             <td>
               <% if s.active? %>
                 <span class="pill pill-green">active</span>

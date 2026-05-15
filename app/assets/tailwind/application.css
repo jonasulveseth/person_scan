@@ -1,11 +1,18 @@
 @import "tailwindcss";
 
+/* Earth-tone palette — warm beige page, cream surfaces, brown accents. */
+@theme {
+  --color-app: #f1e9da;          /* warm beige body bg */
+  --color-app-header: #f7f1e4;   /* slightly lighter cream for chrome */
+  --color-paper: #fbf7ee;        /* card-tint cream */
+}
+
 @layer components {
   .btn {
-    @apply inline-flex items-center justify-center gap-1.5 rounded-md border border-stone-300 bg-white px-3 py-1.5 text-sm font-medium text-stone-800 shadow-sm hover:bg-stone-50 disabled:opacity-50 transition;
+    @apply inline-flex items-center justify-center gap-1.5 rounded-md border border-stone-300 bg-white px-3 py-1.5 text-sm font-medium text-stone-800 shadow-sm hover:bg-stone-50 hover:border-amber-800/40 disabled:opacity-50 transition;
   }
   .btn-primary {
-    @apply border-amber-800 bg-amber-800 text-white hover:bg-amber-900 hover:border-amber-900;
+    @apply border-amber-800 bg-amber-800 text-white shadow-sm hover:bg-amber-900 hover:border-amber-900;
   }
   .btn-danger {
     @apply border-red-700 bg-white text-red-700 hover:bg-red-50;
@@ -13,14 +20,14 @@
   .btn-sm { @apply px-2 py-1 text-xs; }
 
   .card {
-    @apply rounded-lg border border-stone-200 bg-white p-5 shadow-sm;
+    @apply rounded-lg border border-amber-900/10 bg-white p-5 shadow-[0_1px_2px_rgba(120,53,15,0.05),0_1px_3px_rgba(120,53,15,0.03)];
   }
-  .card-title { @apply text-lg font-semibold text-stone-900 mb-3; }
+  .card-title { @apply text-base font-semibold text-stone-900 mb-3 tracking-tight; }
 
   .input,
   .select,
   .textarea {
-    @apply block w-full rounded-md border border-stone-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-amber-800 focus:ring-1 focus:ring-amber-800 outline-none;
+    @apply block w-full rounded-md border border-stone-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-amber-800 focus:ring-1 focus:ring-amber-800 outline-none transition;
   }
 
   .label { @apply block text-sm font-medium text-stone-700 mb-1; }
@@ -29,12 +36,13 @@
     @apply w-full text-sm border-collapse;
   }
   .table thead th {
-    @apply text-left text-xs font-semibold uppercase tracking-wider text-stone-500 border-b border-stone-200 px-3 py-2 bg-stone-100;
+    @apply text-left text-xs font-semibold uppercase tracking-wider text-amber-900/70 border-b border-amber-900/10 px-3 py-2.5 bg-paper;
   }
   .table tbody td {
-    @apply border-b border-stone-100 px-3 py-2 text-stone-800;
+    @apply border-b border-amber-900/5 px-3 py-3 text-stone-800;
   }
-  .table tbody tr:hover { @apply bg-stone-50; }
+  .table tbody tr:hover { @apply bg-amber-50/50; }
+  .table tbody tr:last-child td { @apply border-b-0; }
 
   .pill {
     @apply inline-flex items-center rounded-full bg-stone-100 px-2 py-0.5 text-xs font-medium text-stone-700;
@@ -44,9 +52,40 @@
   .pill-amber { @apply bg-amber-100 text-amber-900; }
 
   .nav-link {
-    @apply text-sm text-stone-600 hover:text-stone-900;
+    @apply text-sm text-stone-600 hover:text-stone-900 transition;
   }
   .nav-link-active { @apply text-stone-900 font-medium; }
 
+  /* Compact "← back" link used at the top of detail/edit pages. */
+  .back-link {
+    @apply inline-flex items-center gap-1 text-sm text-stone-500 hover:text-amber-800 transition mb-4;
+  }
+
+  /* Section page title — matches the light-weight headline style from
+     the landing/auth hero ("Know what your visitors are like"). */
+  .page-title {
+    @apply text-2xl sm:text-3xl font-light tracking-tight text-stone-900;
+  }
+  .page-subtitle {
+    @apply text-sm text-stone-600 mt-1.5 leading-relaxed;
+  }
+
+  /* Compact stat-card variant used on trends/evaluation overviews. */
+  .stat-card {
+    @apply rounded-lg border border-amber-900/10 bg-paper p-5 shadow-[0_1px_2px_rgba(120,53,15,0.05)];
+  }
+  .stat-label {
+    @apply text-xs uppercase tracking-wider text-amber-900/70 font-medium;
+  }
+  .stat-value {
+    @apply text-3xl font-light text-stone-900 mt-1.5;
+  }
+  .stat-meta {
+    @apply text-xs text-stone-500 mt-1;
+  }
+
   .prose-code pre { @apply bg-stone-100 rounded-md p-3 overflow-auto text-xs; }
+  .code-block {
+    @apply bg-stone-900 text-amber-50 rounded-md p-3 overflow-auto text-xs font-mono leading-relaxed;
+  }
 }

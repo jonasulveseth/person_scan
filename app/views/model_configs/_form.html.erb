@@ -10,7 +10,7 @@
   <div class="card space-y-4">
     <div>
       <%= f.label :name, class: "label" %>
-      <span class="text-xs text-zinc-500">Internal identifier, e.g. "nebius-llama-3.3-70b"</span>
+      <span class="text-xs text-stone-500">Internal identifier, e.g. "nebius-llama-3.3-70b"</span>
       <%= f.text_field :name, required: true, class: "input mt-1" %>
     </div>
 
@@ -21,7 +21,7 @@
 
     <div>
       <%= f.label :model_id, class: "label" %>
-      <span class="text-xs text-zinc-500">Provider-specific identifier, e.g. <code>meta-llama/Llama-3.3-70B-Instruct</code>, <code>gpt-4o-mini</code>, <code>claude-sonnet-4-6</code></span>
+      <span class="text-xs text-stone-500">Provider-specific identifier, e.g. <code>meta-llama/Llama-3.3-70B-Instruct</code>, <code>gpt-4o-mini</code>, <code>claude-sonnet-4-6</code></span>
       <%= f.text_field :model_id, required: true, class: "input mt-1 font-mono text-xs" %>
     </div>
 
@@ -37,7 +37,7 @@
 
   <div class="card">
     <%= f.label :prompt_template, "Prompt template (system message)", class: "label" %>
-    <p class="text-xs text-zinc-500 mb-2">Sent as the <code>system</code> message before each visitor's features JSON.</p>
+    <p class="text-xs text-stone-500 mb-2">Sent as the <code>system</code> message before each visitor's features JSON.</p>
     <%= f.text_area :prompt_template, rows: 22, required: true, class: "textarea font-mono text-xs" %>
   </div>
 

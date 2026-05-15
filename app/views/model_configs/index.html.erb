@@ -1,9 +1,10 @@
-<div class="flex items-center justify-between mb-6">
-  <h1 class="text-2xl font-semibold">Model configurations</h1>
+<div class="flex flex-wrap items-end justify-between gap-3 mb-8">
+  <div>
+    <h1 class="page-title">Model configurations</h1>
+    <p class="page-subtitle">Each site can override its model. Otherwise the <strong class="text-stone-700">★ default</strong> below is used.</p>
+  </div>
   <%= link_to "+ Add model", new_model_config_path, class: "btn btn-primary" %>
 </div>
-
-<p class="text-sm text-zinc-600 mb-4">Each <strong>site</strong> can override its model on the site edit page. Otherwise the <strong>★ default</strong> below is used.</p>
 
 <div class="card mb-6">
   <h2 class="card-title">Provider connectivity</h2>
@@ -14,7 +15,7 @@
       </span>
     <% end %>
   </div>
-  <p class="text-xs text-zinc-500 mt-2">Add keys via <code>bin/rails credentials:edit</code> under their provider key (<code>nebius.api_key</code>, <code>openai.api_key</code>, <code>anthropic.api_key</code>).</p>
+  <p class="text-xs text-stone-500 mt-2">Add keys via <code>bin/rails credentials:edit</code> under their provider key (<code>nebius.api_key</code>, <code>openai.api_key</code>, <code>anthropic.api_key</code>).</p>
 </div>
 
 <div class="card p-0 overflow-hidden">
@@ -38,7 +39,7 @@
             <%= m.provider %>
             <% unless @provider_status[m.provider] %><span class="pill pill-amber">no key</span><% end %>
           </td>
-          <td class="font-mono text-xs text-zinc-600"><%= m.model_id %></td>
+          <td class="font-mono text-xs text-stone-600"><%= m.model_id %></td>
           <td><%= m.active? ? content_tag(:span, "yes", class: "pill pill-green") : content_tag(:span, "no", class: "pill") %></td>
           <td>
             <% if m.is_default? %>

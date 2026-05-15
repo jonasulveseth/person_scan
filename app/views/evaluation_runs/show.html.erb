@@ -1,37 +1,42 @@
-<p class="mb-3"><%= link_to "← Evaluations", evaluation_runs_path, class: "nav-link" %></p>
+<%= link_to evaluation_runs_path, class: "back-link" do %>
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg>
+  Evaluations
+<% end %>
 
-<h1 class="text-2xl font-semibold mb-1">Evaluation run #<%= @run.id %></h1>
-<p class="text-sm text-zinc-600 mb-6">
-  Model: <strong><%= @run.model_config.name %></strong>
-  <span class="text-xs text-zinc-500">(<%= @run.model_config.provider %>/<%= @run.model_config.model_id %>)</span>
-  &middot; <%= @run.started_at %>
-</p>
+<div class="mb-8">
+  <h1 class="page-title">Evaluation run <span class="text-stone-400">#<%= @run.id %></span></h1>
+  <p class="page-subtitle">
+    Model: <strong class="text-stone-700"><%= @run.model_config.name %></strong>
+    <span class="text-stone-400">(<%= @run.model_config.provider %>/<%= @run.model_config.model_id %>)</span>
+    <span class="text-stone-300">·</span> <%= @run.started_at %>
+  </p>
+</div>
 
 <% age_eval = @run.results.is_a?(Hash) ? @run.results["age_evaluated"].to_i : 0 %>
-<div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-  <div class="card">
-    <div class="text-xs uppercase tracking-wider text-zinc-500">Examples</div>
-    <div class="text-2xl font-semibold mt-1"><%= @run.total %></div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+  <div class="stat-card">
+    <div class="stat-label">Examples</div>
+    <div class="stat-value"><%= @run.total %></div>
   </div>
-  <div class="card">
-    <div class="text-xs uppercase tracking-wider text-zinc-500">Gender accuracy</div>
-    <div class="text-2xl font-semibold mt-1"><%= @run.accuracy_gender ? "#{(@run.accuracy_gender * 100).round(1)}%" : "—" %></div>
-    <div class="text-xs text-zinc-500 mt-1"><%= @run.correct_gender %>/<%= @run.total %></div>
+  <div class="stat-card">
+    <div class="stat-label">Gender accuracy</div>
+    <div class="stat-value"><%= @run.accuracy_gender ? "#{(@run.accuracy_gender * 100).round(1)}%" : "—" %></div>
+    <div class="stat-meta"><%= @run.correct_gender %>/<%= @run.total %></div>
   </div>
-  <div class="card">
-    <div class="text-xs uppercase tracking-wider text-zinc-500">Age accuracy</div>
-    <div class="text-2xl font-semibold mt-1"><%= age_eval.positive? ? "#{(@run.correct_age_bracket.to_f / age_eval * 100).round(1)}%" : "—" %></div>
-    <div class="text-xs text-zinc-500 mt-1"><%= @run.correct_age_bracket %>/<%= age_eval %></div>
+  <div class="stat-card">
+    <div class="stat-label">Age accuracy</div>
+    <div class="stat-value"><%= age_eval.positive? ? "#{(@run.correct_age_bracket.to_f / age_eval * 100).round(1)}%" : "—" %></div>
+    <div class="stat-meta"><%= @run.correct_age_bracket %>/<%= age_eval %></div>
   </div>
-  <div class="card">
-    <div class="text-xs uppercase tracking-wider text-zinc-500">Avg confidence</div>
-    <div class="text-2xl font-semibold mt-1"><%= (@run.avg_confidence.to_f * 100).round(1) %>%</div>
+  <div class="stat-card">
+    <div class="stat-label">Avg confidence</div>
+    <div class="stat-value"><%= (@run.avg_confidence.to_f * 100).round(1) %>%</div>
   </div>
 </div>
 
 <div class="card p-0 overflow-hidden">
-  <div class="px-5 py-3 border-b border-zinc-200">
-    <h2 class="text-base font-semibold">Per-example breakdown</h2>
+  <div class="px-5 py-3 border-b border-stone-200 bg-stone-50/60">
+    <h2 class="text-base font-semibold tracking-tight">Per-example breakdown</h2>
   </div>
   <% items = @run.results.is_a?(Hash) ? @run.results["examples"] || [] : [] %>
   <table class="table">

@@ -1,7 +1,12 @@
-<p class="mb-3"><%= link_to "← #{@site.name}", site_path(@site), class: "nav-link" %></p>
+<%= link_to site_path(@site), class: "back-link" do %>
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg>
+  <%= @site.name %>
+<% end %>
 
-<h1 class="text-2xl font-semibold mb-2">API keys</h1>
-<p class="text-sm text-zinc-600 mb-6">Use these in <code>Authorization: Bearer …</code> when calling <code>/api/v1/…</code> for <strong><%= @site.name %></strong>.</p>
+<div class="mb-8">
+  <h1 class="page-title">API keys</h1>
+  <p class="page-subtitle">Use these in <code class="text-amber-800">Authorization: Bearer …</code> when calling <code class="text-amber-800">/api/v1/…</code> for <strong class="text-stone-700"><%= @site.name %></strong>.</p>
+</div>
 
 <div class="card mb-6">
   <h2 class="card-title">Generate new key</h2>
@@ -12,7 +17,7 @@
     </div>
     <%= submit_tag "Generate", class: "btn btn-primary" %>
   <% end %>
-  <p class="text-xs text-zinc-500 mt-2">The token will be shown once in the success banner — copy it immediately.</p>
+  <p class="text-xs text-stone-500 mt-2">The token will be shown once in the success banner — copy it immediately.</p>
 </div>
 
 <% if @api_keys.any? %>
@@ -33,8 +38,8 @@
                 <span class="pill pill-red">revoked</span>
               <% end %>
             </td>
-            <td class="text-xs text-zinc-500"><%= k.last_used_at&.strftime("%Y-%m-%d %H:%M") || "—" %></td>
-            <td class="text-xs text-zinc-500"><%= k.created_at.strftime("%Y-%m-%d") %></td>
+            <td class="text-xs text-stone-500"><%= k.last_used_at&.strftime("%Y-%m-%d %H:%M") || "—" %></td>
+            <td class="text-xs text-stone-500"><%= k.created_at.strftime("%Y-%m-%d") %></td>
             <td class="text-right">
               <% if k.active? %>
                 <%= button_to "Revoke", revoke_site_api_key_path(@site, k), method: :post, class: "btn btn-sm" %>
@@ -47,5 +52,5 @@
     </table>
   </div>
 <% else %>
-  <div class="card text-center text-sm text-zinc-500">No API keys yet.</div>
+  <div class="card text-center text-sm text-stone-500 py-10">No API keys yet.</div>
 <% end %>
