@@ -1,5 +1,5 @@
 class LandingController < ApplicationController
-  allow_unauthenticated_access only: %i[splash how_it_works]
+  allow_unauthenticated_access only: %i[splash how_it_works pricing]
   layout "landing"
 
   def splash
@@ -8,5 +8,8 @@ class LandingController < ApplicationController
 
   def how_it_works
     redirect_to sites_path and return if authenticated?
+  end
+
+  def pricing
   end
 end

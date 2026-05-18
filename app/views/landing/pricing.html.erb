@@ -1,0 +1,172 @@
+<%# --- Pricing hero --------------------------------------------------- %>
+<section class="pt-32 pb-12 bg-gradient-to-b from-stone-950 to-stone-900 text-white">
+  <div class="mx-auto max-w-3xl px-5 text-center">
+    <h1 class="font-light text-4xl sm:text-5xl tracking-tight">
+      Pay for <strong class="font-semibold">profiles that count</strong>
+    </h1>
+    <p class="mt-5 text-lg text-white/80 font-light max-w-2xl mx-auto">
+      You're only billed for high-confidence profiles — visitors we classify with
+      <span class="font-semibold text-amber-300">≥ 70% confidence</span>. Low-confidence reads
+      and bot traffic are free.
+    </p>
+  </div>
+</section>
+
+<%# --- Tiers ---------------------------------------------------------- %>
+<section class="bg-stone-100 py-16">
+  <div class="mx-auto max-w-6xl px-5">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+
+      <%# Free %>
+      <div class="bg-white rounded-2xl p-7 shadow-sm border border-stone-200 flex flex-col">
+        <h3 class="text-xl font-semibold text-stone-900">Free</h3>
+        <p class="text-sm text-stone-500 mt-1">Try it on a real site</p>
+        <div class="mt-5">
+          <span class="text-4xl font-light text-stone-900">€0</span>
+          <span class="text-stone-500 text-sm">/mo</span>
+        </div>
+        <p class="mt-5 text-stone-700 text-sm">
+          <strong class="font-semibold">100</strong> profiles / month
+        </p>
+        <ul class="mt-5 space-y-2 text-sm text-stone-600 flex-1">
+          <li class="flex gap-2"><span class="text-amber-700">✓</span> Dashboard access</li>
+          <li class="flex gap-2"><span class="text-amber-700">✓</span> 1 site</li>
+          <li class="flex gap-2 text-stone-400"><span>·</span> No API</li>
+        </ul>
+        <%= link_to "Start free", signup_path,
+                    class: "mt-6 inline-block text-center rounded-md bg-stone-900 hover:bg-stone-950 transition px-5 py-2.5 text-sm font-semibold text-white" %>
+      </div>
+
+      <%# Starter %>
+      <div class="bg-white rounded-2xl p-7 shadow-sm border border-stone-200 flex flex-col">
+        <h3 class="text-xl font-semibold text-stone-900">Starter</h3>
+        <p class="text-sm text-stone-500 mt-1">For one small site</p>
+        <div class="mt-5">
+          <span class="text-4xl font-light text-stone-900">€29</span>
+          <span class="text-stone-500 text-sm">/mo</span>
+        </div>
+        <p class="mt-5 text-stone-700 text-sm">
+          <strong class="font-semibold">1,000</strong> profiles / month
+        </p>
+        <ul class="mt-5 space-y-2 text-sm text-stone-600 flex-1">
+          <li class="flex gap-2"><span class="text-amber-700">✓</span> Dashboard access</li>
+          <li class="flex gap-2"><span class="text-amber-700">✓</span> Up to 3 sites</li>
+          <li class="flex gap-2 text-stone-400"><span>·</span> No API</li>
+        </ul>
+        <%= link_to "Choose Starter", signup_path(plan: "starter"),
+                    class: "mt-6 inline-block text-center rounded-md bg-stone-900 hover:bg-stone-950 transition px-5 py-2.5 text-sm font-semibold text-white" %>
+      </div>
+
+      <%# Growth — highlighted %>
+      <div class="bg-stone-900 text-white rounded-2xl p-7 shadow-lg flex flex-col relative">
+        <span class="absolute -top-3 left-1/2 -translate-x-1/2 inline-block bg-amber-500 text-stone-900 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full">Most popular</span>
+        <h3 class="text-xl font-semibold">Growth</h3>
+        <p class="text-sm text-stone-300 mt-1">Scaling a single product</p>
+        <div class="mt-5">
+          <span class="text-4xl font-light">€99</span>
+          <span class="text-stone-300 text-sm">/mo</span>
+        </div>
+        <p class="mt-5 text-sm">
+          <strong class="font-semibold">10,000</strong> profiles / month
+        </p>
+        <ul class="mt-5 space-y-2 text-sm text-stone-200 flex-1">
+          <li class="flex gap-2"><span class="text-amber-400">✓</span> Dashboard access</li>
+          <li class="flex gap-2"><span class="text-amber-400">✓</span> Unlimited sites</li>
+          <li class="flex gap-2"><span class="text-amber-400">✓</span> JSON API</li>
+          <li class="flex gap-2"><span class="text-amber-400">✓</span> Email support</li>
+        </ul>
+        <%= link_to "Choose Growth", signup_path(plan: "growth"),
+                    class: "mt-6 inline-block text-center rounded-md bg-amber-500 hover:bg-amber-400 transition px-5 py-2.5 text-sm font-semibold text-stone-900" %>
+      </div>
+
+      <%# Scale %>
+      <div class="bg-white rounded-2xl p-7 shadow-sm border border-stone-200 flex flex-col">
+        <h3 class="text-xl font-semibold text-stone-900">Scale</h3>
+        <p class="text-sm text-stone-500 mt-1">High-traffic + integrations</p>
+        <div class="mt-5">
+          <span class="text-4xl font-light text-stone-900">€299</span>
+          <span class="text-stone-500 text-sm">/mo</span>
+        </div>
+        <p class="mt-5 text-stone-700 text-sm">
+          <strong class="font-semibold">50,000</strong> profiles / month
+        </p>
+        <ul class="mt-5 space-y-2 text-sm text-stone-600 flex-1">
+          <li class="flex gap-2"><span class="text-amber-700">✓</span> Dashboard access</li>
+          <li class="flex gap-2"><span class="text-amber-700">✓</span> Unlimited sites</li>
+          <li class="flex gap-2"><span class="text-amber-700">✓</span> JSON API + webhooks</li>
+          <li class="flex gap-2"><span class="text-amber-700">✓</span> Priority support</li>
+          <li class="flex gap-2"><span class="text-amber-700">✓</span> Custom model training</li>
+        </ul>
+        <%= link_to "Choose Scale", signup_path(plan: "scale"),
+                    class: "mt-6 inline-block text-center rounded-md bg-stone-900 hover:bg-stone-950 transition px-5 py-2.5 text-sm font-semibold text-white" %>
+      </div>
+
+    </div>
+
+    <p class="mt-10 text-center text-sm text-stone-600">
+      Need more than 50,000 profiles or want on-prem? <a href="mailto:hello@individlabs.com" class="text-amber-700 underline">Talk to us</a>.
+    </p>
+  </div>
+</section>
+
+<%# --- What counts ----------------------------------------------------- %>
+<section class="bg-white py-20">
+  <div class="mx-auto max-w-3xl px-5">
+    <h2 class="font-light text-3xl sm:text-4xl text-zinc-900 text-center">
+      What's a <strong class="font-semibold">profile</strong>, exactly?
+    </h2>
+    <div class="mt-10 grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div>
+        <h3 class="font-semibold text-zinc-900">A real, classified visitor</h3>
+        <p class="mt-2 text-sm text-zinc-600">
+          One unique visitor session that produced enough behavioral signal for us to predict a personality profile.
+        </p>
+      </div>
+      <div>
+        <h3 class="font-semibold text-zinc-900">High-confidence only</h3>
+        <p class="mt-2 text-sm text-zinc-600">
+          Only predictions with confidence <span class="font-semibold">≥ 0.7</span> count. Uncertain reads don't bill.
+        </p>
+      </div>
+      <div>
+        <h3 class="font-semibold text-zinc-900">Bots are free</h3>
+        <p class="mt-2 text-sm text-zinc-600">
+          Sessions with too little behavior, no mouse motion, or obvious bot fingerprints never bill you.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%# --- FAQ ------------------------------------------------------------- %>
+<section class="bg-zinc-50 py-20">
+  <div class="mx-auto max-w-3xl px-5">
+    <h2 class="font-light text-3xl text-zinc-900 text-center mb-10">Pricing FAQ</h2>
+    <div class="space-y-6">
+      <div>
+        <h3 class="font-semibold text-zinc-900">What happens if I go over my profile limit?</h3>
+        <p class="mt-1 text-sm text-zinc-600">We'll keep tracking and showing you data, but new profiles past your limit are paused until next month or until you upgrade.</p>
+      </div>
+      <div>
+        <h3 class="font-semibold text-zinc-900">Can I switch plans anytime?</h3>
+        <p class="mt-1 text-sm text-zinc-600">Yes — upgrades take effect immediately and we prorate. Downgrades apply on the next billing cycle.</p>
+      </div>
+      <div>
+        <h3 class="font-semibold text-zinc-900">Do you store personal data?</h3>
+        <p class="mt-1 text-sm text-zinc-600">No. We work from anonymized behavioral metrics (mouse motion, scroll, clicks). No cookies, no PII.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%# --- Final CTA ------------------------------------------------------- %>
+<section class="bg-stone-900 py-20 text-center">
+  <div class="mx-auto max-w-2xl px-5">
+    <h2 class="font-light text-3xl sm:text-4xl text-white">Start with 100 free profiles</h2>
+    <p class="mt-3 text-stone-300">No card required.</p>
+    <div class="mt-8">
+      <%= link_to "Sign up for free", signup_path,
+                  class: "inline-block rounded-md bg-amber-500 hover:bg-amber-400 transition px-7 py-3 text-base font-semibold text-stone-900 shadow-lg" %>
+    </div>
+  </div>
+</section>

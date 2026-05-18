@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="h-full">
   <head>
-    <title><%= content_for(:title) || "Person Scan — Know what your visitors are like" %></title>
+    <title><%= content_for(:title) || "individlabs — Know what your visitors are like" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
@@ -38,11 +38,12 @@
   <body class="text-zinc-900 antialiased">
     <header class="absolute top-0 left-0 right-0 z-20">
       <div class="mx-auto max-w-6xl px-5 py-5 flex items-center justify-between">
-        <%= link_to splash_path, class: "text-white text-lg font-semibold tracking-tight" do %>
-          Person Scan
+        <%= link_to splash_path, class: "block" do %>
+          <%= image_tag "layout/individlabs-logo.png", alt: "individlabs", class: "h-[3.2rem] w-auto" %>
         <% end %>
         <nav class="flex items-center gap-5 text-sm text-white/90">
-          <a href="#how-it-works" class="hover:text-white">How it works</a>
+          <a href="<%= splash_path %>#how-it-works" class="hover:text-white">How it works</a>
+          <%= link_to "Pricing", pricing_path, class: "hover:text-white" %>
           <%= link_to "Log in", login_path, class: "hover:text-white" %>
           <%= link_to "Sign up", signup_path, class: "rounded-md bg-white text-zinc-900 px-3 py-1.5 font-medium hover:bg-zinc-100" %>
         </nav>
@@ -53,7 +54,7 @@
 
     <footer class="bg-zinc-900 text-zinc-400 text-sm">
       <div class="mx-auto max-w-6xl px-5 py-10 flex flex-wrap items-center justify-between gap-4">
-        <p>© <%= Date.current.year %> Person Scan</p>
+        <p>© <%= Date.current.year %> individlabs</p>
         <nav class="flex gap-5">
           <%= link_to "Log in", login_path, class: "hover:text-white" %>
           <%= link_to "Sign up", signup_path, class: "hover:text-white" %>

@@ -35,3 +35,7 @@
 
 /app/assets/builds/*
 !/app/assets/builds/.keep
+
+# Claude Code: keep machine-specific notes out of git.
+/CLAUDE.local.md
+/.claude/settings.local.json

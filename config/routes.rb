@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   get  "login",       to: "sessions#new",    as: :login
   get  "splash",      to: "landing#splash",  as: :splash
   get  "how-it-works", to: "landing#how_it_works", as: :how_it_works
+  get  "pricing",     to: "landing#pricing", as: :pricing
 
   resources :sites, param: :id do
     resources :visitors, only: :show do

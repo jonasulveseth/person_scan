@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="h-full">
   <head>
-    <title><%= content_for(:title) || "Person Scan" %></title>
+    <title><%= content_for(:title) || "individlabs" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
@@ -24,9 +24,8 @@
         <% end %>
 
         <div class="lg:flex-1 flex flex-col justify-center mt-6 lg:mt-0 max-w-md">
-          <div class="flex items-center gap-2 mb-3 lg:mb-8">
-            <span class="inline-block w-2 h-2 rounded-full bg-amber-300"></span>
-            <span class="text-base lg:text-lg font-semibold tracking-tight">Person Scan</span>
+          <div class="mb-3 lg:mb-8">
+            <%= image_tag "layout/individlabs-logo.png", alt: "individlabs", class: "h-[3.2rem] w-auto" %>
           </div>
           <h1 class="text-2xl sm:text-3xl lg:text-4xl font-light leading-tight">
             Know what your <strong class="font-semibold">visitors</strong> are <strong class="font-semibold">like</strong>.
@@ -38,7 +37,7 @@
         </div>
 
         <div class="hidden lg:block text-xs text-amber-100/50 mt-8">
-          © <%= Date.current.year %> Person Scan
+          © <%= Date.current.year %> individlabs
         </div>
       </aside>
 

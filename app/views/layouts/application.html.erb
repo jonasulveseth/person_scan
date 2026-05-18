@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="h-full bg-stone-50">
   <head>
-    <title><%= content_for(:title) || "Person Scan" %></title>
+    <title><%= content_for(:title) || "individlabs" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
@@ -27,9 +27,8 @@
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div class="flex h-16 items-center justify-between">
             <div class="flex items-center gap-8">
-              <%= link_to sites_path, class: "flex items-center gap-2 group" do %>
-                <span class="inline-block w-2 h-2 rounded-full bg-amber-800 group-hover:bg-amber-900 transition"></span>
-                <span class="text-base font-semibold tracking-tight text-stone-900">Person Scan</span>
+              <%= link_to sites_path, class: "flex items-center group" do %>
+                <%= image_tag "layout/logo_gray.png", alt: "individlabs", class: "h-[2.8rem] w-auto" %>
               <% end %>
               <nav class="hidden md:flex items-center gap-1 h-16">
                 <%= link_to "Sites",         sites_path,             class: nav_link_class(sites_path) %>
@@ -66,7 +65,7 @@
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-5 flex flex-wrap items-center justify-between gap-3 text-xs text-stone-500">
           <div class="flex items-center gap-2">
             <span class="inline-block w-1.5 h-1.5 rounded-full bg-amber-800"></span>
-            <span>© <%= Date.current.year %> Person Scan</span>
+            <span>© <%= Date.current.year %> individlabs</span>
           </div>
           <span class="italic">Behavior-driven personality insights.</span>
         </div>

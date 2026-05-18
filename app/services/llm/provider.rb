@@ -1,8 +1,4 @@
 module Llm
-  class Error < StandardError; end
-  class ConfigError < Error; end
-  class ApiError < Error; end
-
   Result = Struct.new(:label, :dimensions, :confidence, :rationale, :raw, keyword_init: true)
 
   class Provider
