@@ -2,6 +2,23 @@
 
 ## 2026-05-18
 
+### Features
+- Wire Stripe Checkout for paid plans — adds `stripe ~> 13.0` gem, `StripeConfig`
+  helper that reads keys per mode (test/live) from credentials, `StripeCheckoutController`
+  (new/success/cancel) that creates a Stripe Customer on first checkout and
+  starts a 14-day trial subscription, and `StripeWebhooksController` for
+  `customer.subscription.created/updated/deleted`. New routes under `/stripe/*`.
+  Pricing-page CTAs (Starter/Growth/Scale) now route to Stripe Checkout.
+- Add `users.stripe_customer_id`, `users.plan` (default `free`),
+  `users.trial_ends_at`, and `subscriptions` table with `stripe_subscription_id`
+  unique. `User` model gains `PLANS`, `has_many :subscriptions`,
+  `active_subscription`, `on_paid_plan?`. (ebdfc15)
+- Copy Stripe API keys from the reemove app's credentials into person_scan's
+  `stripe.{test,live}.{secret_key,publishable_key}` (same Stripe account).
+  Webhook secrets and price IDs are placeholders pending creation of
+  person_scan-specific products + a registered webhook endpoint in the
+  Stripe Dashboard. (ebdfc15)
+
 ### Design
 - Sharpen splash messaging — hero from "Know what your visitors are like" to
   "Drop one line on your site. Get the profile of every visitor." Subhead

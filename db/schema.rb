@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_05_15_093000) do
+ActiveRecord::Schema[8.0].define(version: 2026_05_18_174501) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -125,6 +125,20 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_15_093000) do
     t.index ["user_id"], name: "index_sites_on_user_id"
   end
 
+  create_table "subscriptions", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "stripe_subscription_id", null: false
+    t.string "stripe_price_id"
+    t.string "plan", null: false
+    t.string "status", null: false
+    t.datetime "trial_ends_at"
+    t.datetime "current_period_end"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["stripe_subscription_id"], name: "index_subscriptions_on_stripe_subscription_id", unique: true
+    t.index ["user_id"], name: "index_subscriptions_on_user_id"
+  end
+
   create_table "tracking_events", force: :cascade do |t|
     t.bigint "visitor_id", null: false
     t.bigint "site_id", null: false
@@ -164,7 +178,11 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_15_093000) do
     t.string "password_digest", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "stripe_customer_id"
+    t.string "plan", default: "free", null: false
+    t.datetime "trial_ends_at"
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
+    t.index ["stripe_customer_id"], name: "index_users_on_stripe_customer_id", unique: true, where: "(stripe_customer_id IS NOT NULL)"
   end
 
   create_table "visitor_features", force: :cascade do |t|
@@ -212,6 +230,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_15_093000) do
   add_foreign_key "sessions", "users"
   add_foreign_key "sites", "model_configs"
   add_foreign_key "sites", "users"
+  add_foreign_key "subscriptions", "users"
   add_foreign_key "tracking_events", "sites"
   add_foreign_key "tracking_events", "visitors"
   add_foreign_key "training_examples", "visitors"

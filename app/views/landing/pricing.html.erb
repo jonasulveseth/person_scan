@@ -53,7 +53,7 @@
           <li class="flex gap-2"><span class="text-amber-700">✓</span> Up to 3 sites</li>
           <li class="flex gap-2 text-stone-400"><span>·</span> No API</li>
         </ul>
-        <%= link_to "Choose Starter", signup_path(plan: "starter"),
+        <%= link_to "Choose Starter", new_stripe_checkout_path(plan: "starter"),
                     class: "mt-6 inline-block text-center rounded-md bg-stone-900 hover:bg-stone-950 transition px-5 py-2.5 text-sm font-semibold text-white" %>
       </div>
 
@@ -75,7 +75,7 @@
           <li class="flex gap-2"><span class="text-amber-400">✓</span> JSON API</li>
           <li class="flex gap-2"><span class="text-amber-400">✓</span> Email support</li>
         </ul>
-        <%= link_to "Choose Growth", signup_path(plan: "growth"),
+        <%= link_to "Choose Growth", new_stripe_checkout_path(plan: "growth"),
                     class: "mt-6 inline-block text-center rounded-md bg-amber-500 hover:bg-amber-400 transition px-5 py-2.5 text-sm font-semibold text-stone-900" %>
       </div>
 
@@ -97,7 +97,7 @@
           <li class="flex gap-2"><span class="text-amber-700">✓</span> Priority support</li>
           <li class="flex gap-2"><span class="text-amber-700">✓</span> Custom model training</li>
         </ul>
-        <%= link_to "Choose Scale", signup_path(plan: "scale"),
+        <%= link_to "Choose Scale", new_stripe_checkout_path(plan: "scale"),
                     class: "mt-6 inline-block text-center rounded-md bg-stone-900 hover:bg-stone-950 transition px-5 py-2.5 text-sm font-semibold text-white" %>
       </div>
 

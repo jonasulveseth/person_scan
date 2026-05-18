@@ -59,3 +59,6 @@ end
 gem "sqlite3", "~> 2.9"
 
 gem "tailwindcss-rails", "~> 4.4"
+
+# Payments
+gem "stripe", "~> 13.0"

@@ -8,6 +8,14 @@ Rails.application.routes.draw do
   get  "how-it-works", to: "landing#how_it_works", as: :how_it_works
   get  "pricing",     to: "landing#pricing", as: :pricing
 
+  # Stripe Checkout (subscriptions)
+  scope :stripe do
+    get  "checkout",          to: "stripe_checkout#new",     as: :new_stripe_checkout
+    get  "checkout/success",  to: "stripe_checkout#success", as: :success_stripe_checkout
+    get  "checkout/cancel",   to: "stripe_checkout#cancel",  as: :cancel_stripe_checkout
+    post "webhook",           to: "stripe_webhooks#create",  as: :stripe_webhook
+  end
+
   resources :sites, param: :id do
     resources :visitors, only: :show do
       post :reclassify, on: :member
