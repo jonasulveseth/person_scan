@@ -3,6 +3,14 @@
 ## 2026-05-18
 
 ### Features
+- Create Stripe Products + monthly Prices via API (test mode, EUR) and
+  inject the resulting price IDs into credentials. Products use
+  `lookup_key` (`person_scan_{starter,growth,scale}_monthly_eur`) so re-runs
+  are idempotent. Stripe Checkout is now end-to-end functional in test mode;
+  only `stripe.test.webhook_secret` remains a placeholder until the public
+  webhook endpoint is registered in the Stripe Dashboard. (3075a84)
+
+### Features
 - Wire Stripe Checkout for paid plans — adds `stripe ~> 13.0` gem, `StripeConfig`
   helper that reads keys per mode (test/live) from credentials, `StripeCheckoutController`
   (new/success/cancel) that creates a Stripe Customer on first checkout and
