@@ -22,7 +22,11 @@ class PersonalityClassifier
       label: result.label,
       dimensions: result.dimensions,
       confidence: result.confidence,
-      raw: { rationale: result.rationale, response: result.raw }
+      raw: {
+        rationale: result.rationale,
+        response: result.raw,
+        confidences: result.confidences
+      }
     )
   end
 

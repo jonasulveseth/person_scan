@@ -3,7 +3,33 @@
 ## 2026-05-19
 
 ### Features
-- Persona prompt: force directional best-guess for `likely_gender` and
+- Per-dimension confidence on persona predictions. Previous single `confidence`
+  field collapsed everything to one number — a clear "Familiar Returner"
+  persona and a directional 30-40 age-bracket guess both got dragged to the
+  lowest common denominator. Schema now includes a top-level `confidences`
+  block in the LLM JSON output (one float per dimension, alongside the
+  existing single `confidence` for the overall persona/label call):
+  ```
+  "dimensions":  { decisiveness: 0.6, likely_gender: "male", ... },
+  "confidences": { decisiveness: 0.55, likely_gender: 0.65,
+                    likely_age_bracket: 0.30, ... },
+  "confidence":  0.60   // overall persona/label
+  ```
+  - Prompt updated (seeds.rb) to ask for the new block and give per-field
+    calibration guidance (gender 0.55-0.80 when locale+device align;
+    age_bracket 0.25-0.45 unless multiple strong cues; behavioral dims
+    0.50-0.80 when data is rich).
+  - `Llm::Result` struct gains a `confidences` field; `Llm::Provider#parse_result`
+    coerces each value to Float and clamps to [0,1]. Missing/empty
+    `confidences` falls back to `{}` (backwards compatible with big5 prompt
+    which doesn't emit it yet).
+  - `PersonalityClassifier` stores `confidences` in `Prediction.raw` jsonb
+    (no migration needed).
+  - Visitor show page renders a per-field chip next to each dimension value:
+    emerald ≥60%, amber 40-59%, stone <40%.
+  - Verified live on visitor c54d63d474b9: gender=male @ 60-65%,
+    age_bracket=30-40 @ 30% (honestly low because age is systematically
+    off-by-one), engagement=0.7 @ 65-70% (richest signal in data). (07d55ef)
   `likely_age_bracket` instead of returning `unknown`. The previous "Never
   invent values → use unknown" rule made the LLM refuse demographic calls
   on almost every visitor (verified empirically: 0% / 0% on a 30-row eval).

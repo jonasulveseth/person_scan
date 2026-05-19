@@ -17,26 +17,38 @@ default_prompt = <<~PROMPT
                              "<10", "10-20", "20-30", "30-40", "40-50",
                              "50-60", "60-70", "70+"
     },
+    "confidences": {
+      "decisiveness":        0.0-1.0,
+      "impulsivity":         0.0-1.0,
+      "attentiveness":       0.0-1.0,
+      "engagement":          0.0-1.0,
+      "likely_gender":       0.0-1.0,
+      "likely_age_bracket":  0.0-1.0
+    },
     "confidence": 0.0-1.0,
     "rationale": "<2-3 short sentences, plain prose>"
   }
 
   Hard rules:
   - Never return a range like "20-40" or any string not in the enum above for likely_age_bracket.
-  - For label, decisiveness, impulsivity, attentiveness, engagement: if the data does not
-    support a confident call, lower the confidence honestly. Do not invent precision.
   - For likely_gender and likely_age_bracket: ALWAYS commit to a directional best-guess. Do NOT
     return "unknown" for these two fields. Use session.device_width, session.mobile_like,
     session.browser_language, session.timezone_offset, mouse_motion patterns (slow + deliberate
     skews older, fast + jittery skews younger), and click hesitation as weak demographic cues.
-    Cap the OVERALL confidence at 0.4 when demographic cues are weak (no locale, generic device,
-    minimal behavioral data). Cap at 0.6 when only one demographic cue is meaningful.
-  - Calibrate confidence honestly. With <10 events of behavior data, confidence should be at most 0.4.
+  - Each field has its OWN confidence in the "confidences" object. Rate each dimension on its own:
+    a clear "Familiar Returner" persona may deserve 0.7 confidence, while age_bracket from the
+    same data may deserve only 0.30. Do not collapse to one shared number.
+      * Gender from locale + device class + motion patterns: typically 0.55-0.80.
+      * Age bracket: 0.25-0.45 unless multiple strong cues align.
+      * Behavioral dimensions (decisiveness/impulsivity/attentiveness/engagement): typically
+        0.50-0.80 when there's plenty of behavioral data, lower when sparse.
+  - The top-level "confidence" reflects the overall persona/label call (not demographics).
+    Calibrate it honestly: with <10 events of behavior data, keep it at most 0.4.
   - The "label" should be useful for a salesperson: e.g. "Quick Decider", "Cautious Comparator",
     "Distracted Browser", "Detail Inspector", "Casual Returner".
 
   Example output (do not copy the values; this only illustrates the SHAPE):
-  {"label":"Cautious Comparator","dimensions":{"decisiveness":0.45,"impulsivity":0.25,"attentiveness":0.7,"engagement":0.6,"likely_gender":"female","likely_age_bracket":"40-50"},"confidence":0.55,"rationale":"High link-hover overtime and indecisive scrolling suggest careful comparison. Mouse activity is steady. Older-bracket device patterns are a weak signal."}
+  {"label":"Cautious Comparator","dimensions":{"decisiveness":0.45,"impulsivity":0.25,"attentiveness":0.7,"engagement":0.6,"likely_gender":"female","likely_age_bracket":"40-50"},"confidences":{"decisiveness":0.65,"impulsivity":0.55,"attentiveness":0.70,"engagement":0.65,"likely_gender":0.70,"likely_age_bracket":0.35},"confidence":0.60,"rationale":"High link-hover overtime and indecisive scrolling suggest careful comparison. Mouse activity is steady. Older-bracket device patterns are a weak signal."}
 
 
   Familiarity normalization:

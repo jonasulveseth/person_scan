@@ -1,5 +1,5 @@
 module Llm
-  Result = Struct.new(:label, :dimensions, :confidence, :rationale, :raw, keyword_init: true)
+  Result = Struct.new(:label, :dimensions, :confidence, :confidences, :rationale, :raw, keyword_init: true)
 
   class Provider
     # Map provider key -> adapter class. Add new providers here.
@@ -37,10 +37,16 @@ module Llm
                     .sub(/\A```(?:json)?\s*/i, "")
                     .sub(/```\s*\z/, "")
       data = JSON.parse(cleaned)
+      raw_confidences = data["confidences"].is_a?(Hash) ? data["confidences"] : {}
+      confidences = raw_confidences.each_with_object({}) do |(k, v), acc|
+        f = Float(v, exception: false)
+        acc[k.to_s] = f.clamp(0.0, 1.0) if f
+      end
       Result.new(
         label: data["label"].to_s,
         dimensions: data["dimensions"] || {},
         confidence: Float(data["confidence"], exception: false) || 0.0,
+        confidences: confidences,
         rationale: data["rationale"].to_s,
         raw: raw_payload
       )

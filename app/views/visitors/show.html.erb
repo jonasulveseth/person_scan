@@ -25,11 +25,19 @@
         <p class="text-sm text-stone-700 italic mb-4"><%= rationale %></p>
       <% end %>
       <h3 class="text-sm font-semibold text-stone-700 mb-2">Dimensions</h3>
+      <% field_confidences = (@prediction.raw.is_a?(Hash) ? @prediction.raw["confidences"] : nil) || {} %>
       <dl class="grid grid-cols-2 gap-x-6 gap-y-1 text-sm">
         <% @prediction.dimensions.each do |k, v| %>
           <div class="flex items-center justify-between border-b border-stone-100 py-1">
             <dt class="text-stone-600"><%= k %></dt>
-            <dd class="font-medium"><%= v %></dd>
+            <dd class="font-medium flex items-center gap-2">
+              <span><%= v %></span>
+              <% if (fc = field_confidences[k]) %>
+                <% pct = (fc.to_f * 100).round %>
+                <% chip_class = pct >= 60 ? "bg-emerald-50 text-emerald-700" : pct >= 40 ? "bg-amber-50 text-amber-700" : "bg-stone-100 text-stone-500" %>
+                <span class="text-[10px] uppercase tracking-wide rounded px-1.5 py-0.5 <%= chip_class %>" title="Per-field confidence"><%= pct %>%</span>
+              <% end %>
+            </dd>
           </div>
         <% end %>
       </dl>
