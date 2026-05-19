@@ -2,6 +2,18 @@
 
 ## 2026-05-19
 
+### Features
+- `SweepStalePredictionsJob` — recurring smart-sweep that re-classifies
+  visitors only when they have meaningful new data. Runs every 15 minutes
+  via `config/recurring.yml`. Filter: `last_seen_at` within the last 7
+  days (recently active), quiet for at least 2 minutes (no mid-session
+  classification), and at least 3 new tracking-/click-/page-events since
+  the latest prediction (or 3+ total events for first-time predictions).
+  Hard-capped at 200 enqueues per run. Enqueues into the existing
+  `ClassifyVisitorJob`, whose 30s debounce de-dups with ingest-driven
+  classifications. First dry-run on 4 prod visitors: enqueued=0,
+  skipped_session=1, skipped_thin=3 — logic confirmed. (8292593)
+
 ### Infrastructure
 - Add Nebius API key to encrypted Rails credentials
   (`Rails.application.credentials.dig(:nebius, :api_key)`). Without it,
