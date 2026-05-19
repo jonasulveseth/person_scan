@@ -2,6 +2,22 @@
 
 ## 2026-05-19
 
+### Design
+- Replace inline flash banners with a fixed top-right toast in both
+  `application` and `auth` layouts. Stimulus `flash_controller` slides the
+  card in, auto-dismisses after 4.5s (7s for alerts), and a close button is
+  always available. Colored left bar + icon distinguishes notice (emerald)
+  from alert (red). White card with shadow reads on both the light app
+  background and the dark auth gradient. (b509a70)
+
+### Fixes
+- Close signup loophole — `UsersController#create` previously fell back to
+  the `free` plan when no `plan` param was supplied, letting anyone POST
+  `/users` and bypass plan selection. Now requires a valid plan in `PLANS`
+  and redirects to `/pricing` otherwise. Also applies the `auth` layout to
+  the create action so re-rendered validation errors stay on the dark theme,
+  and the rate-limit redirect targets `/pricing` (signup needs a plan param). (b509a70)
+
 ### Features
 - Gate signup behind plan selection — all splash / landing CTAs route to
   `/pricing`. `/signup` now requires a `?plan=` param (else redirects to

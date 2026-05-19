@@ -26,15 +26,10 @@
       </div>
     </header>
 
+    <%= render "shared/flash" %>
+
     <main class="min-h-screen flex items-center justify-center px-5 pt-28 pb-12">
       <div class="w-full max-w-md">
-        <% if flash[:notice] %>
-          <div class="mb-4 rounded-md border border-amber-400/40 bg-amber-500/10 px-4 py-3 text-sm text-amber-100"><%= flash[:notice] %></div>
-        <% end %>
-        <% if flash[:alert] %>
-          <div class="mb-4 rounded-md border border-red-400/40 bg-red-500/10 px-4 py-3 text-sm text-red-200"><%= flash[:alert] %></div>
-        <% end %>
-
         <%= yield %>
       </div>
     </main>
