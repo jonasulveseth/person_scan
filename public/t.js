@@ -395,6 +395,40 @@
     return r;
   };
 
+  // ---- first-move timer ------------------------------------------------
+  // Records ms from page load to the first "meaningful" mouse motion —
+  // displacement >20px between samples that are <500ms apart, so a stray
+  // cursor crossing the viewport doesn't count. Recorded once per pageload.
+  function FirstMoveTracker() {
+    var loadTs = performance.now();
+    var lastPos = null;
+    var lastTs = null;
+    var self = this;
+    this.firstMoveMs = null;
+
+    function onMove(e) {
+      if (self.firstMoveMs !== null) {
+        document.removeEventListener("mousemove", onMove, false);
+        return;
+      }
+      var now = performance.now();
+      if (lastPos !== null) {
+        var dx = e.pageX - lastPos[0];
+        var dy = e.pageY - lastPos[1];
+        var dist = Math.sqrt(dx * dx + dy * dy);
+        var dt = now - lastTs;
+        if (dist > 20 && dt < 500) {
+          self.firstMoveMs = Math.round(now - loadTs);
+          document.removeEventListener("mousemove", onMove, false);
+          return;
+        }
+      }
+      lastPos = [e.pageX, e.pageY];
+      lastTs = now;
+    }
+    document.addEventListener("mousemove", onMove, false);
+  }
+
   // ---- page visit + unload --------------------------------------------
   function reportPageVisit() {
     var pending = null;
@@ -460,6 +494,8 @@
     var linkT = new LinkTracker(mouseT);
     var linkPos = new LinkPositionBucket();
     var orientT = new OrientationTracker();
+    var firstMoveT = new FirstMoveTracker();
+    var firstMoveReported = false;
 
     onLinkAdded(function (a) { linkT.attach(mouseT, a); });
     attachUnload(clickT);
@@ -493,6 +529,10 @@
       if (lp) {
         data.link_positions = lp.link_positions;
         data.link_overtimes = lp.link_overtimes;
+      }
+      if (!firstMoveReported && firstMoveT.firstMoveMs !== null) {
+        data.time_to_first_move_ms = firstMoveT.firstMoveMs;
+        firstMoveReported = true;
       }
       post("visitor/track", data);
     }

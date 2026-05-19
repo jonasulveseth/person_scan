@@ -48,7 +48,8 @@ module Ingest
         orientation_gamma: parse_json_or_array(payload["orientation_gamma"]),
         link_positions: payload["link_positions"],
         link_overtimes: payload["link_overtimes"],
-        adblock: to_bool(payload["adblock"])
+        adblock: to_bool(payload["adblock"]),
+        time_to_first_move_ms: parse_int(payload["time_to_first_move_ms"])
       )
 
       enqueue_classification
@@ -64,6 +65,13 @@ module Ingest
     def to_bool(v)
       return nil if v.nil?
       ActiveModel::Type::Boolean.new.cast(v)
+    end
+
+    def parse_int(v)
+      return nil if v.nil? || v == ""
+      Integer(v)
+    rescue ArgumentError, TypeError
+      nil
     end
 
     def extract_mouse_data(payload)

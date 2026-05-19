@@ -3,6 +3,31 @@
 ## 2026-05-19
 
 ### Features
+- Familiarity normalization for personality classification. Returning
+  visitors who know the site behave decisively for a different reason
+  than first-timers who are decisive by personality — same raw signal,
+  different meaning. Two-step rollout:
+    1. `FeatureAggregator` exposes a new `familiarity` block:
+       `is_returning`, `visitor_age_seconds`/`_days`, `distinct_active_days`,
+       `total_page_visits`, `distinct_urls_visited`, `visits_to_current_url`,
+       and `time_to_first_move_ms` (per-pageload + summary). All derived
+       from existing data plus the new tracker signal.
+    2. Tracker (`public/t.js`) has a new `FirstMoveTracker`: from
+       `DOMContentLoaded` until the first mouse motion with >20px
+       displacement in <500ms (filters out cursor pass-throughs). Sent
+       once per page load on the first track batch.
+    3. Migration adds `time_to_first_move_ms:integer` to `tracking_events`.
+    4. Prompt template extended with explicit interpretation rules:
+       discount decisiveness/impulsivity when `is_returning` is true or
+       `visits_to_current_url > 1` or `time_to_first_move_ms` is very
+       short; <800ms = goal-directed, 800-2500ms = orienting, >2500ms =
+       slow orientation.
+  Verified live by re-classifying visitor c54d63d474b9 — label flipped
+  from "Cautious Browser" to "Familiar Returner" with rationale
+  explicitly noting familiarity discount. Tracker round-trip verified:
+  POST /visitor/track with time_to_first_move_ms=420 persisted on
+  TrackingEvent. (af21162)
+
 - `SweepStalePredictionsJob` — recurring smart-sweep that re-classifies
   visitors only when they have meaningful new data. Runs every 15 minutes
   via `config/recurring.yml`. Filter: `last_seen_at` within the last 7

@@ -11,6 +11,7 @@ class FeatureAggregator
   def call
     features = {
       session: session_features,
+      familiarity: familiarity_features,
       counts: counts,
       scroll: scroll_features,
       mouse_activity: mouse_activity_features,
@@ -49,6 +50,48 @@ class FeatureAggregator
       training_gender: v.training_gender,
       mobile_like: (v.device_width.to_i.positive? && v.device_width < 800)
     }.compact
+  end
+
+  # Tells the model whether fast/decisive behavior is likely familiarity
+  # (returning visitor who knows the site) vs personality (new visitor
+  # acting decisively from cold). Derived from existing data — no tracker
+  # change needed.
+  def familiarity_features
+    first = @visitor.first_seen_at
+    last  = @visitor.last_seen_at
+    age_seconds = (first && last) ? (last - first).to_i : 0
+
+    # Distinct calendar days with any activity — proxy for "how many
+    # sessions across the site's lifetime".
+    days = (
+      @tracking_events.map { |e| e.created_at.to_date } +
+      @click_events.map { |e| e.created_at.to_date } +
+      @page_visits.map  { |e| e.created_at.to_date }
+    ).uniq
+
+    current_url = @page_visits.max_by(&:created_at)&.url
+    visits_to_current_url = current_url ? @page_visits.count { |pv| pv.url == current_url } : 0
+
+    # Time from page load to first purposeful mouse motion, in ms. One
+    # observation per page load. Short values (<800ms) suggest a familiar
+    # visitor with a target; long values (>2500ms) suggest cold orientation.
+    first_move_values = @tracking_events.map(&:time_to_first_move_ms).compact
+    first_move_first  = @tracking_events.sort_by(&:created_at).map(&:time_to_first_move_ms).compact.first
+    first_move_summary = summarize(first_move_values)
+
+    {
+      visitor_age_seconds: age_seconds,
+      visitor_age_days: (age_seconds / 86_400.0).round(2),
+      distinct_active_days: days.size,
+      is_returning: days.size > 1 || age_seconds > 3600,
+      total_page_visits: @page_visits.size,
+      distinct_urls_visited: @page_visits.map(&:url).compact.uniq.size,
+      visits_to_current_url: visits_to_current_url,
+      time_to_first_move_ms: {
+        first_pageload: first_move_first,
+        observations: first_move_summary
+      }
+    }
   end
 
   def counts

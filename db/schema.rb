@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_05_18_174501) do
+ActiveRecord::Schema[8.0].define(version: 2026_05_19_130000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -155,6 +155,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_18_174501) do
     t.boolean "adblock"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "time_to_first_move_ms"
     t.index ["site_id"], name: "index_tracking_events_on_site_id"
     t.index ["visitor_id"], name: "index_tracking_events_on_visitor_id"
   end
