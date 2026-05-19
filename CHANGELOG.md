@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-05-19
+
+### Design
+- Add "Pricing" link to the authenticated main nav in `application.html.erb`
+  (landing nav already had it). (d1646e8)
+
 ## 2026-05-18
 
 ### Features
