@@ -5,8 +5,14 @@ class Site < ApplicationRecord
   has_many :visitors, dependent: :destroy
   has_many :api_keys, dependent: :destroy
 
-  def effective_model_config
-    model_config || ModelConfig.default
+  # Site-level override only applies to the site's "persona" model. Other
+  # kinds (big5, future) always resolve to the system default for that kind.
+  def effective_model_config(kind: "persona")
+    if kind == "persona"
+      model_config || ModelConfig.default_for("persona")
+    else
+      ModelConfig.default_for(kind)
+    end
   end
 
   before_validation :assign_public_key, on: :create

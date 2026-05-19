@@ -48,6 +48,48 @@
   </div>
 </div>
 
+<div class="card mb-6">
+  <h2 class="card-title">Big Five (OCEAN)</h2>
+  <% if @big5_prediction %>
+    <div class="flex items-baseline gap-3 mb-3">
+      <span class="text-xl font-semibold"><%= @big5_prediction.label %></span>
+      <span class="pill"><%= (@big5_prediction.confidence * 100).round %>% confidence</span>
+      <span class="text-xs text-stone-500">via <%= @big5_prediction.model_config.name %></span>
+    </div>
+    <% if (b5_rationale = @big5_prediction.raw.is_a?(Hash) ? @big5_prediction.raw["rationale"] : nil) %>
+      <p class="text-sm text-stone-700 italic mb-4"><%= b5_rationale %></p>
+    <% end %>
+    <%
+      ocean_meta = {
+        "openness"          => { label: "Openness",          color: "bg-violet-500"  },
+        "conscientiousness" => { label: "Conscientiousness", color: "bg-emerald-500" },
+        "extraversion"      => { label: "Extraversion",      color: "bg-amber-500"   },
+        "agreeableness"     => { label: "Agreeableness",     color: "bg-sky-500"     },
+        "neuroticism"       => { label: "Neuroticism",       color: "bg-rose-500"    }
+      }
+    %>
+    <dl class="space-y-2 text-sm">
+      <% ocean_meta.each do |key, meta| %>
+        <% raw_val = @big5_prediction.dimensions[key] %>
+        <% num = raw_val.is_a?(Numeric) ? raw_val.to_f.clamp(0.0, 1.0) : nil %>
+        <div>
+          <div class="flex justify-between text-stone-600">
+            <dt><%= meta[:label] %></dt>
+            <dd class="font-medium text-stone-900"><%= num ? "#{(num * 100).round}%" : raw_val.to_s %></dd>
+          </div>
+          <% if num %>
+            <div class="mt-1 h-1.5 w-full rounded-full bg-stone-100 overflow-hidden">
+              <div class="h-full <%= meta[:color] %>" style="width: <%= (num * 100).round %>%"></div>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </dl>
+  <% else %>
+    <p class="text-sm text-stone-500"><em>No Big Five prediction yet — send more events or wait for the queue.</em></p>
+  <% end %>
+</div>
+
 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
   <div class="card">
     <h2 class="card-title">Reclassify</h2>

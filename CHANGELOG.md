@@ -3,6 +3,36 @@
 ## 2026-05-19
 
 ### Features
+- Second classifier: Big Five (OCEAN) personality model running in parallel
+  with the existing persona classifier. Same feature pipeline, same LLM
+  infrastructure, different prompt and dimension schema. Visitors now get
+  two predictions per classification cycle: the original sales-oriented
+  persona (decisiveness/impulsivity/attentiveness/engagement +
+  gender/age_bracket) AND a Big Five vector (openness, conscientiousness,
+  extraversion, agreeableness, neuroticism).
+  - New `model_configs.kind` column (`persona` | `big5`), with a partial
+    unique index `(kind, is_default)` so each kind has its own default.
+  - New `ModelConfig` row: `nebius-llama-3.3-70b-big5`. Big-5 prompt
+    explicitly maps clickstream signals to OCEAN traits and instructs the
+    model to keep `agreeableness` near 0.5 unless strong signal supports
+    a call (honest about clickstream's weak coverage of that trait).
+    Includes the same familiarity-normalization block as the persona
+    prompt.
+  - `ClassifyVisitorJob` iterates over `ModelConfig::KINDS` and runs each
+    classifier with its own 30s debounce. `SweepStalePredictionsJob`
+    enqueues a visitor if ANY kind is stale.
+  - `Site#effective_model_config(kind:)` selects per kind; the site-level
+    model_config override still applies only to `persona`.
+  - `Visitor#latest_prediction(kind: nil)` is back-compat: no kind returns
+    most-recent across all kinds; with kind, filters via model_config.
+  - Visitor show page renders a new "Big Five (OCEAN)" card with
+    horizontal bars (violet/emerald/amber/sky/rose) above the existing
+    Reclassify block. Original persona card unchanged.
+  - Verified on visitor c54d63d474b9: persona → "Familiar Returner",
+    big5 → "Curious Explorer" (O=0.7 C=0.6 E=0.4 A=0.5 N=0.3). Show
+    template renders both, with model attribution per card. (9a3f6e6)
+
+### Features
 - Familiarity normalization for personality classification. Returning
   visitors who know the site behave decisively for a different reason
   than first-timers who are decisive by personality — same raw signal,

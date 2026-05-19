@@ -27,16 +27,10 @@ class SweepStalePredictionsJob < ApplicationJob
     scope.find_each(batch_size: 200) do |visitor|
       break if enqueued >= MAX_VISITORS_PER_RUN
 
-      last_pred_at = visitor.predictions.maximum(:created_at)
-      if last_pred_at && visitor.last_seen_at <= last_pred_at
-        skipped_session += 1
-        next
-      end
-
-      since = last_pred_at || Time.at(0)
-      if event_count_since(visitor, since) < MIN_NEW_EVENTS
-        skipped_thin += 1
-        next
+      reason = stale_kind_reason(visitor)
+      case reason
+      when :session then skipped_session += 1; next
+      when :thin    then skipped_thin    += 1; next
       end
 
       ClassifyVisitorJob.perform_later(visitor.id)
@@ -48,6 +42,28 @@ class SweepStalePredictionsJob < ApplicationJob
   end
 
   private
+
+  # Returns nil if at least one kind is eligible to be re-classified,
+  # otherwise :session (no activity since last prediction in every kind)
+  # or :thin (too few new events for any kind).
+  def stale_kind_reason(visitor)
+    worst = :session
+    ModelConfig::KINDS.each do |kind|
+      kind_pred_at = visitor.predictions
+                            .joins(:model_config).where(model_configs: { kind: kind })
+                            .maximum(:created_at)
+      if kind_pred_at && visitor.last_seen_at <= kind_pred_at
+        next # this kind is fresh; check the others
+      end
+      since = kind_pred_at || Time.at(0)
+      if event_count_since(visitor, since) >= MIN_NEW_EVENTS
+        return nil
+      else
+        worst = :thin
+      end
+    end
+    worst
+  end
 
   def event_count_since(visitor, since)
     visitor.tracking_events.where("created_at > ?", since).count +

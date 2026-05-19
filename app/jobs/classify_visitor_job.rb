@@ -1,8 +1,8 @@
 class ClassifyVisitorJob < ApplicationJob
   queue_as :default
 
-  # Debounce: only run if at least DEBOUNCE_SECONDS have elapsed since the
-  # last prediction for this visitor. Prevents one prediction per event.
+  # Debounce per kind: don't re-classify a given (visitor, kind) more
+  # often than this. Prevents one prediction per event.
   DEBOUNCE_SECONDS = 30
 
   # Retry transient API errors (rate limits, 5xx, network) — but NOT config
@@ -16,9 +16,16 @@ class ClassifyVisitorJob < ApplicationJob
     visitor = Visitor.find_by(id: visitor_id)
     return if visitor.nil?
 
-    last = visitor.predictions.order(created_at: :desc).limit(1).pick(:created_at)
-    return if last.present? && last > DEBOUNCE_SECONDS.seconds.ago
+    ModelConfig::KINDS.each do |kind|
+      config = visitor.site.effective_model_config(kind: kind)
+      next if config.nil?
 
-    PersonalityClassifier.call(visitor)
+      last = visitor.predictions
+                    .joins(:model_config).where(model_configs: { kind: kind })
+                    .maximum(:created_at)
+      next if last.present? && last > DEBOUNCE_SECONDS.seconds.ago
+
+      PersonalityClassifier.call(visitor, model_config: config)
+    end
   end
 end

@@ -2,9 +2,10 @@ class VisitorsController < ApplicationController
   before_action :set_visitor
 
   def show
-    @prediction = @visitor.latest_prediction
-    @features   = @visitor.visitor_feature&.features || {}
-    @models     = ModelConfig.active.order(:name)
+    @prediction      = @visitor.latest_prediction(kind: "persona")
+    @big5_prediction = @visitor.latest_prediction(kind: "big5")
+    @features        = @visitor.visitor_feature&.features || {}
+    @models          = ModelConfig.active.order(:kind, :name)
   end
 
   def reclassify

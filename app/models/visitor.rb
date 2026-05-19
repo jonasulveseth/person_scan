@@ -7,7 +7,9 @@ class Visitor < ApplicationRecord
   has_one  :visitor_feature, dependent: :destroy
   has_many :predictions, dependent: :destroy
 
-  def latest_prediction
-    predictions.order(created_at: :desc).first
+  def latest_prediction(kind: nil)
+    scope = predictions.order(created_at: :desc)
+    scope = scope.joins(:model_config).where(model_configs: { kind: kind }) if kind
+    scope.first
   end
 end
