@@ -2,6 +2,16 @@
 
 ## 2026-05-19
 
+### Infrastructure
+- Add Nebius API key to encrypted Rails credentials
+  (`Rails.application.credentials.dig(:nebius, :api_key)`). Without it,
+  `ClassifyVisitorJob` was raising `Llm::ConfigError` on every dispatch and
+  the `discard_on` swallowed it silently — every visitor's `latest_prediction`
+  came out `nil` regardless of how many tracking events they had. Verified
+  by running `PersonalityClassifier.call` on visitor c54d63d474b9 (37
+  events) and getting back a real `Prediction` with label / dimensions /
+  confidence. (c2e7243)
+
 ### Design
 - Replace inline flash banners with a fixed top-right toast in all three
   layouts (`application`, `auth`, `landing`). Stimulus `flash_controller`
