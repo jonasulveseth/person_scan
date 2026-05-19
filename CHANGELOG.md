@@ -3,12 +3,12 @@
 ## 2026-05-19
 
 ### Design
-- Replace inline flash banners with a fixed top-right toast in both
-  `application` and `auth` layouts. Stimulus `flash_controller` slides the
-  card in, auto-dismisses after 4.5s (7s for alerts), and a close button is
-  always available. Colored left bar + icon distinguishes notice (emerald)
-  from alert (red). White card with shadow reads on both the light app
-  background and the dark auth gradient. (b509a70)
+- Replace inline flash banners with a fixed top-right toast in all three
+  layouts (`application`, `auth`, `landing`). Stimulus `flash_controller`
+  slides the card in, auto-dismisses after 4.5s (7s for alerts), and a close
+  button is always available. Colored left bar + icon distinguishes notice
+  (emerald) from alert (red). White card with shadow reads on both the
+  light app background and the dark auth/landing gradient. (b509a70)
 
 ### Fixes
 - Close signup loophole — `UsersController#create` previously fell back to
