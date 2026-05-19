@@ -12,10 +12,10 @@ default_prompt = <<~PROMPT
       "impulsivity":   0.0-1.0,
       "attentiveness": 0.0-1.0,
       "engagement":    0.0-1.0,
-      "likely_gender":       one of: "male", "female", "unknown",
+      "likely_gender":       one of: "male", "female",
       "likely_age_bracket":  one of EXACTLY these strings:
                              "<10", "10-20", "20-30", "30-40", "40-50",
-                             "50-60", "60-70", "70+", "unknown"
+                             "50-60", "60-70", "70+"
     },
     "confidence": 0.0-1.0,
     "rationale": "<2-3 short sentences, plain prose>"
@@ -23,13 +23,40 @@ default_prompt = <<~PROMPT
 
   Hard rules:
   - Never return a range like "20-40" or any string not in the enum above for likely_age_bracket.
-  - Never invent values. If the data does not support a call, use "unknown" and lower the confidence.
+  - For label, decisiveness, impulsivity, attentiveness, engagement: if the data does not
+    support a confident call, lower the confidence honestly. Do not invent precision.
+  - For likely_gender and likely_age_bracket: ALWAYS commit to a directional best-guess. Do NOT
+    return "unknown" for these two fields. Use session.device_width, session.mobile_like,
+    session.browser_language, session.timezone_offset, mouse_motion patterns (slow + deliberate
+    skews older, fast + jittery skews younger), and click hesitation as weak demographic cues.
+    Cap the OVERALL confidence at 0.4 when demographic cues are weak (no locale, generic device,
+    minimal behavioral data). Cap at 0.6 when only one demographic cue is meaningful.
   - Calibrate confidence honestly. With <10 events of behavior data, confidence should be at most 0.4.
   - The "label" should be useful for a salesperson: e.g. "Quick Decider", "Cautious Comparator",
     "Distracted Browser", "Detail Inspector", "Casual Returner".
 
   Example output (do not copy the values; this only illustrates the SHAPE):
   {"label":"Cautious Comparator","dimensions":{"decisiveness":0.45,"impulsivity":0.25,"attentiveness":0.7,"engagement":0.6,"likely_gender":"female","likely_age_bracket":"40-50"},"confidence":0.55,"rationale":"High link-hover overtime and indecisive scrolling suggest careful comparison. Mouse activity is steady. Older-bracket device patterns are a weak signal."}
+
+
+  Familiarity normalization:
+  - The features object includes a "familiarity" block: is_returning,
+    distinct_active_days, total_page_visits, visits_to_current_url,
+    visitor_age_seconds, and time_to_first_move_ms (ms from page load
+    to the first purposeful mouse movement).
+  - Fast, decisive, low-hesitation behavior in a RETURNING visitor
+    (is_returning=true OR distinct_active_days>1 OR visits_to_current_url>1
+    OR a very SHORT time_to_first_move_ms) usually reflects site
+    familiarity, not personality. Discount decisiveness/impulsivity
+    signals accordingly and prefer a label like "Familiar Returner",
+    "Repeat Buyer", or "Known Browser".
+  - For NEW visitors (is_returning=false AND distinct_active_days<=1),
+    the same fast behavior is a genuine personality signal — keep
+    decisiveness/impulsivity high.
+  - time_to_first_move_ms interpretation: <800ms suggests goal-directed
+    visitor with a target in mind; 800-2500ms is typical orienting; >2500ms
+    suggests slow/distracted/cautious orientation. Always read this in
+    conjunction with is_returning before drawing personality conclusions.
 PROMPT
 
 # Default = Nebius/Llama-3.3. Idempotent across runs.
@@ -39,12 +66,19 @@ default.assign_attributes(
   model_id: "meta-llama/Llama-3.3-70B-Instruct",
   prompt_template: default_prompt,
   active: true,
-  is_default: true
+  is_default: true,
+  kind: "persona"
 )
-# Only update the prompt on existing rows if it's still the previous default — avoid
-# overwriting a user's hand-tuned prompt.
-default.save! if default.new_record? || default.prompt_template_was.nil? ||
-                 default.prompt_template_was.start_with?("You analyze website-visitor")
+# Only update the prompt on existing rows if it's still a previous default-shipped
+# version — avoid overwriting a user's hand-tuned prompt. Bump this guard whenever
+# we change the default prompt so re-seeds pick up the new one.
+KNOWN_OLD_PROMPT_PREFIXES = [
+  "You analyze website-visitor",            # earliest version
+  "You are a behavioral classifier"         # all prompts from May 14 onwards
+].freeze
+default.save! if default.new_record? ||
+                 default.prompt_template_was.nil? ||
+                 KNOWN_OLD_PROMPT_PREFIXES.any? { |p| default.prompt_template_was.start_with?(p) }
 
 # Clean up old Anthropic seed if it lingers from earlier dev.
 ModelConfig.where(name: "claude-default").destroy_all

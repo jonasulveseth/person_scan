@@ -3,6 +3,25 @@
 ## 2026-05-19
 
 ### Features
+- Persona prompt: force directional best-guess for `likely_gender` and
+  `likely_age_bracket` instead of returning `unknown`. The previous "Never
+  invent values → use unknown" rule made the LLM refuse demographic calls
+  on almost every visitor (verified empirically: 0% / 0% on a 30-row eval).
+  An A/B against a real visitor with known truth (male, 48) showed that
+  three different Nebius models (Llama-3.3-70B, Qwen3-235B, GPT-OSS-120B)
+  all correctly identified gender 100% of the time and were off by one
+  adjacent age bracket when allowed to commit — i.e. the signal exists,
+  the prompt was suppressing it. New rule: gender/age MUST be a directional
+  call from session.device_width, session.mobile_like, browser_language,
+  timezone_offset, mouse_motion patterns and click hesitation. Overall
+  confidence is capped at 0.4 when demographic cues are weak, 0.6 when only
+  one cue is meaningful, leaving the existing <10-events <=0.4 floor in
+  place. seeds.rb upgraded to keep the new prompt as the shipped default
+  (guard widened so future re-seeds pick up successive default versions).
+  Verified live on visitor c54d63d474b9: 3/3 runs returned male/30-40 with
+  confidence 0.35-0.40. (657200e)
+
+### Features
 - Second classifier: Big Five (OCEAN) personality model running in parallel
   with the existing persona classifier. Same feature pipeline, same LLM
   infrastructure, different prompt and dimension schema. Visitors now get
