@@ -39,13 +39,13 @@
     <header class="absolute top-0 left-0 right-0 z-20">
       <div class="mx-auto max-w-6xl px-5 py-5 flex items-center justify-between">
         <%= link_to splash_path, class: "block" do %>
-          <%= image_tag "layout/individlabs-logo.png", alt: "individlabs", class: "h-[3.2rem] w-auto" %>
+          <%= image_tag "layout/individlabs-logo.png", alt: "individlabs", class: "h-[3.2rem] w-auto brightness-0 invert" %>
         <% end %>
         <nav class="flex items-center gap-5 text-sm text-white/90">
           <a href="<%= splash_path %>#how-it-works" class="hover:text-white">How it works</a>
           <%= link_to "Pricing", pricing_path, class: "hover:text-white" %>
           <%= link_to "Log in", login_path, class: "hover:text-white" %>
-          <%= link_to "Sign up", signup_path, class: "rounded-md bg-white text-zinc-900 px-3 py-1.5 font-medium hover:bg-zinc-100" %>
+          <%= link_to "Get started", pricing_path, class: "rounded-md bg-white text-zinc-900 px-3 py-1.5 font-medium hover:bg-zinc-100" %>
         </nav>
       </div>
     </header>
@@ -57,7 +57,7 @@
         <p>© <%= Date.current.year %> individlabs</p>
         <nav class="flex gap-5">
           <%= link_to "Log in", login_path, class: "hover:text-white" %>
-          <%= link_to "Sign up", signup_path, class: "hover:text-white" %>
+          <%= link_to "Pricing", pricing_path, class: "hover:text-white" %>
         </nav>
       </div>
     </footer>

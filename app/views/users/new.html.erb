@@ -1,31 +1,52 @@
-<h2 class="text-2xl font-semibold mb-1">Create your account</h2>
-<p class="text-sm text-stone-600 mb-6">Start scanning visitor behavior in minutes.</p>
+<% plan_meta = {
+  "free"    => { name: "Free",    price: "€0",   profiles: "100 profiles / month",   cta: "Create free account" },
+  "starter" => { name: "Starter", price: "€29",  profiles: "1,000 profiles / month", cta: "Continue to Checkout" },
+  "growth"  => { name: "Growth",  price: "€99",  profiles: "10,000 profiles / month + API", cta: "Continue to Checkout" },
+  "scale"   => { name: "Scale",   price: "€299", profiles: "50,000 profiles / month + API + webhooks", cta: "Continue to Checkout" }
+}[@plan] %>
 
-<%= form_with model: @user, class: "space-y-4" do |f| %>
+<h2 class="text-3xl font-light mb-1">Create your account</h2>
+<p class="text-sm text-stone-300 mb-6">Start profiling visitors in minutes.</p>
+
+<div class="mb-6 rounded-lg border border-white/15 bg-white/5 px-4 py-3 flex items-center justify-between">
+  <div>
+    <div class="text-xs uppercase tracking-wider text-stone-400">Selected plan</div>
+    <div class="font-semibold text-white"><%= plan_meta[:name] %> · <%= plan_meta[:price] %><%= "/mo" unless @plan == "free" %></div>
+    <div class="text-xs text-stone-400 mt-0.5"><%= plan_meta[:profiles] %></div>
+  </div>
+  <%= link_to "Change", pricing_path, class: "text-xs text-amber-400 hover:text-amber-300" %>
+</div>
+
+<%= form_with model: @user, url: users_path, class: "space-y-4" do |f| %>
+  <%= hidden_field_tag "user[plan]", @plan %>
   <% if @user.errors.any? %>
-    <div class="rounded-md border border-red-200 bg-red-50 p-3">
-      <ul class="text-sm text-red-800 list-disc list-inside">
+    <div class="rounded-md border border-red-400/40 bg-red-500/10 p-3">
+      <ul class="text-sm text-red-200 list-disc list-inside">
         <% @user.errors.full_messages.each do |msg| %><li><%= msg %></li><% end %>
       </ul>
     </div>
   <% end %>
   <div>
-    <%= f.label :email_address, class: "label" %>
-    <%= f.email_field :email_address, required: true, autofocus: true, class: "input" %>
+    <%= f.label :email_address, class: "block text-sm font-medium text-stone-200 mb-1" %>
+    <%= f.email_field :email_address, required: true, autofocus: true,
+        class: "w-full rounded-md bg-white/5 border border-white/15 px-3 py-2 text-white placeholder-stone-500 focus:outline-none focus:border-amber-400 focus:bg-white/10" %>
   </div>
   <div>
-    <%= f.label :password, class: "label" %>
-    <%= f.password_field :password, required: true, minlength: 8, class: "input" %>
-    <p class="text-xs text-stone-500 mt-1">At least 8 characters.</p>
+    <%= f.label :password, class: "block text-sm font-medium text-stone-200 mb-1" %>
+    <%= f.password_field :password, required: true, minlength: 8,
+        class: "w-full rounded-md bg-white/5 border border-white/15 px-3 py-2 text-white focus:outline-none focus:border-amber-400 focus:bg-white/10" %>
+    <p class="text-xs text-stone-400 mt-1">At least 8 characters.</p>
   </div>
   <div>
-    <%= f.label :password_confirmation, class: "label" %>
-    <%= f.password_field :password_confirmation, required: true, class: "input" %>
+    <%= f.label :password_confirmation, class: "block text-sm font-medium text-stone-200 mb-1" %>
+    <%= f.password_field :password_confirmation, required: true,
+        class: "w-full rounded-md bg-white/5 border border-white/15 px-3 py-2 text-white focus:outline-none focus:border-amber-400 focus:bg-white/10" %>
   </div>
-  <%= f.submit "Sign up", class: "btn btn-primary w-full" %>
+  <%= f.submit plan_meta[:cta],
+      class: "w-full rounded-md bg-amber-500 hover:bg-amber-400 transition px-5 py-2.5 text-sm font-semibold text-stone-900 cursor-pointer" %>
 <% end %>
 
-<p class="mt-6 text-sm text-stone-600">
+<p class="mt-6 text-sm text-stone-400">
   Already have an account?
-  <%= link_to "Log in", login_path, class: "text-amber-800 hover:underline" %>
+  <%= link_to "Log in", login_path, class: "text-amber-400 hover:text-amber-300 underline" %>
 </p>

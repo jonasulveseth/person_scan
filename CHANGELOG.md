@@ -2,9 +2,26 @@
 
 ## 2026-05-19
 
+### Features
+- Gate signup behind plan selection — all splash / landing CTAs route to
+  `/pricing`. `/signup` now requires a `?plan=` param (else redirects to
+  `/pricing` with a notice). Free signups create the user directly; paid
+  signups create the user, sign them in, and redirect into Stripe Checkout
+  with a 14-day trial. Unauthenticated visits to `/stripe/checkout?plan=X`
+  now redirect to `/signup?plan=X` (instead of `/login`), so the user can
+  register on the way. (0211498)
+
 ### Design
 - Add "Pricing" link to the authenticated main nav in `application.html.erb`
   (landing nav already had it). (d1646e8)
+- Redesign auth layout (signup / login / password reset) with the same
+  dark `stone-950 → stone-900` gradient as `/pricing`. Single-column with
+  the logo at the top, amber-500 submit buttons, white-on-dark form fields.
+  Signup view shows a "Selected plan" banner with a Change link back to
+  `/pricing`. (0211498)
+- Fix logo on landing header against dark backgrounds — apply
+  `brightness-0 invert` so the dark-text logo renders white on the pricing
+  hero and the auth layout (where it was previously invisible). (0211498)
 
 ## 2026-05-18
 

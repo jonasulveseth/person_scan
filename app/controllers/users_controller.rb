@@ -4,14 +4,26 @@ class UsersController < ApplicationController
   rate_limit to: 10, within: 3.minutes, only: :create, with: -> { redirect_to new_user_url, alert: "Try again later." }
 
   def new
+    @plan = params[:plan].to_s
+    unless User::PLANS.include?(@plan)
+      redirect_to pricing_path, notice: "Choose a plan to get started." and return
+    end
     @user = User.new
   end
 
   def create
+    @plan = (params.dig(:user, :plan) || params[:plan]).to_s
+    @plan = "free" unless User::PLANS.include?(@plan)
+
     @user = User.new(user_params)
+    @user.plan = @plan
     if @user.save
       start_new_session_for(@user)
-      redirect_to sites_path, notice: "Welcome!"
+      if @user.plan == "free"
+        redirect_to sites_path, notice: "Welcome!"
+      else
+        redirect_to new_stripe_checkout_path(plan: @user.plan)
+      end
     else
       render :new, status: :unprocessable_entity
     end

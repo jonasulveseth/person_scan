@@ -1,4 +1,8 @@
 class StripeCheckoutController < ApplicationController
+  # #new redirects unauth users to /signup themselves (so they can register with
+  # a plan in tow); #cancel is hit by Stripe's Cancel URL which has no session.
+  allow_unauthenticated_access only: %i[new cancel]
+
   PLANS = {
     "starter" => { name: "Starter", price: "€29", profiles: 1_000 },
     "growth"  => { name: "Growth",  price: "€99", profiles: 10_000 },
@@ -9,6 +13,10 @@ class StripeCheckoutController < ApplicationController
     plan = params[:plan].to_s
     unless PLANS.key?(plan)
       redirect_to pricing_path, alert: "Unknown plan." and return
+    end
+
+    unless authenticated?
+      redirect_to signup_path(plan: plan) and return
     end
 
     unless StripeConfig.configured?

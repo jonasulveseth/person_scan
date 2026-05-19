@@ -1,20 +1,25 @@
-<h2 class="text-2xl font-semibold mb-1">Welcome back</h2>
-<p class="text-sm text-stone-600 mb-6">Log in to your individlabs account.</p>
+<h2 class="text-3xl font-light mb-1">Welcome back</h2>
+<p class="text-sm text-stone-300 mb-6">Log in to your individlabs account.</p>
 
 <%= form_with url: session_path, class: "space-y-4" do |form| %>
   <div>
-    <%= form.label :email_address, class: "label" %>
-    <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", value: params[:email_address], class: "input" %>
+    <%= form.label :email_address, class: "block text-sm font-medium text-stone-200 mb-1" %>
+    <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", value: params[:email_address],
+        class: "w-full rounded-md bg-white/5 border border-white/15 px-3 py-2 text-white placeholder-stone-500 focus:outline-none focus:border-amber-400 focus:bg-white/10" %>
   </div>
   <div>
-    <%= form.label :password, class: "label" %>
-    <%= form.password_field :password, required: true, autocomplete: "current-password", maxlength: 72, class: "input" %>
+    <div class="flex items-baseline justify-between mb-1">
+      <%= form.label :password, class: "block text-sm font-medium text-stone-200" %>
+      <%= link_to "Forgot?", new_password_path, class: "text-xs text-amber-400 hover:text-amber-300" %>
+    </div>
+    <%= form.password_field :password, required: true, autocomplete: "current-password", maxlength: 72,
+        class: "w-full rounded-md bg-white/5 border border-white/15 px-3 py-2 text-white focus:outline-none focus:border-amber-400 focus:bg-white/10" %>
   </div>
-  <%= form.submit "Sign in", class: "btn btn-primary w-full" %>
+  <%= form.submit "Log in",
+      class: "w-full rounded-md bg-amber-500 hover:bg-amber-400 transition px-5 py-2.5 text-sm font-semibold text-stone-900 cursor-pointer" %>
 <% end %>
 
-<p class="mt-6 text-sm text-stone-600">
-  <%= link_to "Forgot password?", new_password_path, class: "text-amber-800 hover:underline" %>
-  &middot;
-  <%= link_to "Create an account", signup_path, class: "text-amber-800 hover:underline" %>
+<p class="mt-6 text-sm text-stone-400">
+  Need an account?
+  <%= link_to "See plans", pricing_path, class: "text-amber-400 hover:text-amber-300 underline" %>
 </p>
